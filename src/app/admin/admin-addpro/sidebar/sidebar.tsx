@@ -26,11 +26,11 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="flex relative">
+    <div className="flex relative ">
       <div
         className={`transition-width duration-300 ${
           isOpen ? "w-64" : "w-26"
-        } bg-gray-800 text-white h-screen`}
+        } bg-gray-800 text-white h-full`}
       >
         <div className="p-4 flex flex-col items-center">
           <img
@@ -88,7 +88,7 @@ const Sidebar = () => {
                 {isCustomerOpen && isOpen && (
                   <ul className="pl-8 mt-2 space-y-2">
                     <li className="flex items-center">
-                      <Link href="../admin/import-products">
+                      <Link href="/product-all">
                         <div className="flex items-center cursor-pointer">
                           <FaUserAlt />
                           <span className="ml-2">ข้อมูลสินค้า</span>

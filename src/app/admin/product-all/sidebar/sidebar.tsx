@@ -88,7 +88,7 @@ const Sidebar = () => {
                 {isCustomerOpen && isOpen && (
                   <ul className="pl-8 mt-2 space-y-2">
                     <li className="flex items-center">
-                      <Link href="../admin/import-products">
+                      <Link href="/product-all">
                         <div className="flex items-center cursor-pointer">
                           <FaUserAlt />
                           <span className="ml-2">ข้อมูลสินค้า</span>
