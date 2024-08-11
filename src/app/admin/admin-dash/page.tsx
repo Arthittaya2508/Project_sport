@@ -1,12 +1,10 @@
 "use client";
 import React, { Suspense, ReactNode } from "react";
 import Sidebar from "./sidebar/sidebar";
+import Navbar from "./nav/nav";
+import Dashboard from "./dashboard/dashboard";
 
-interface AdminLayoutPageProps {
-  children: ReactNode;
-}
-
-export default function AdminLayoutPage({ children }: AdminLayoutPageProps) {
+export default function AdminLayoutPage() {
   return (
     <div className="flex">
       {/* Sidebar Component */}
@@ -14,7 +12,11 @@ export default function AdminLayoutPage({ children }: AdminLayoutPageProps) {
 
       {/* Main Content */}
       <div className="flex-grow">
-        <Suspense fallback={<>loading</>}>{children}</Suspense>
+        <Navbar />
+        <Suspense fallback={<>loading</>}>
+          {/* แสดงหน้า Dashboard */}
+          <Dashboard />
+        </Suspense>
       </div>
     </div>
   );

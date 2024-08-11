@@ -1,13 +1,27 @@
 "use client";
 import { useState } from "react";
-import { FaBagShopping } from "react-icons/fa6";
-import { FaUserAlt, FaCog, FaTachometerAlt } from "react-icons/fa";
+import {
+  FaUserAlt,
+  FaCog,
+  FaTachometerAlt,
+  FaChevronDown,
+} from "react-icons/fa";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(true);
+  const [isCustomerOpen, setIsCustomerOpen] = useState(false);
+  const [isReportOpen, setIsReportOpen] = useState(false);
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
+  };
+
+  const toggleCustomerDropdown = () => {
+    setIsCustomerOpen(!isCustomerOpen);
+  };
+
+  const toggleReportDropdown = () => {
+    setIsReportOpen(!isReportOpen);
   };
 
   return (
@@ -22,15 +36,24 @@ const Sidebar = () => {
             src="../images/cat.jpg"
             alt="Sidebar Image"
             className={`transition-all duration-300 rounded-full ${
-              isOpen ? "w-28 h-28" : "w-12 h-12"
+              isOpen ? "w-32 h-32" : "w-16 h-16"
             }`}
           />
           {isOpen && (
             <h2 className="mt-2 text-center">Arthittaya Thammasiri</h2>
           )}
-          <nav className="mt-4 w-full">
-            <ul className="space-y-2">
-              <li className="flex items-center justify-center">
+
+          <nav className="mt-8 w-full ">
+            <ul
+              className={`space-y-2 ${
+                isOpen ? "pl-4" : "flex flex-col items-center space-y-4"
+              }`}
+            >
+              <li
+                className={`flex items-center ${
+                  isOpen ? "" : "justify-center"
+                }`}
+              >
                 <FaTachometerAlt />
                 {isOpen && (
                   <span className="ml-2 transition-opacity duration-300">
@@ -38,20 +61,96 @@ const Sidebar = () => {
                   </span>
                 )}
               </li>
-              <li className="flex items-center justify-center">
-                <FaUserAlt />
+              <li>
+                <div
+                  className={`flex items-center cursor-pointer ${
+                    isOpen ? "" : "justify-center"
+                  }`}
+                  onClick={toggleCustomerDropdown}
+                >
+                  <FaCog />
+                  {isOpen && (
+                    <span className="ml-2 flex items-center transition-opacity duration-300">
+                      ข้อมูลสินค้า
+                      <FaChevronDown
+                        className={`ml-1 transition-transform duration-300 ${
+                          isCustomerOpen ? "rotate-180" : ""
+                        }`}
+                      />
+                    </span>
+                  )}
+                </div>
+                {isCustomerOpen && isOpen && (
+                  <ul className="pl-8 mt-2 space-y-2">
+                    <li className="flex items-center">
+                      <FaUserAlt />
+                      <span className="ml-2">ข้อมูลประเภท</span>
+                    </li>
+                    <li className="flex items-center">
+                      <FaUserAlt />
+                      <span className="ml-2">ข้อมูลแบนด์</span>
+                    </li>
+                    <li className="flex items-center">
+                      <FaUserAlt />
+                      <span className="ml-2">ข้อมูลรายการสินค้า</span>
+                    </li>
+                  </ul>
+                )}
+              </li>
+              <li
+                className={`flex items-center ${
+                  isOpen ? "" : "justify-center"
+                }`}
+              >
+                <FaTachometerAlt />
                 {isOpen && (
                   <span className="ml-2 transition-opacity duration-300">
-                    Profile
+                    ข้อมูลลูกค้า
                   </span>
                 )}
               </li>
-              <li className="flex items-center justify-center">
-                <FaCog />
+              <li
+                className={`flex items-center ${
+                  isOpen ? "" : "justify-center"
+                }`}
+              >
+                <FaTachometerAlt />
                 {isOpen && (
                   <span className="ml-2 transition-opacity duration-300">
-                    Settings
+                    ข้อมูลพนักงาน
                   </span>
+                )}
+              </li>
+              <li>
+                <div
+                  className={`flex items-center cursor-pointer ${
+                    isOpen ? "" : "justify-center"
+                  }`}
+                  onClick={toggleReportDropdown}
+                >
+                  <FaCog />
+                  {isOpen && (
+                    <span className="ml-2 flex items-center transition-opacity duration-300">
+                      รายงานการขาย
+                      <FaChevronDown
+                        className={`ml-1 transition-transform duration-300 ${
+                          isReportOpen ? "rotate-180" : ""
+                        }`}
+                      />
+                    </span>
+                  )}
+                </div>
+                {isReportOpen && isOpen && (
+                  <ul className="pl-8 mt-2 space-y-2">
+                    <li className="flex items-center">
+                      <FaUserAlt />
+                      <span className="ml-2">รายงานรายวัน</span>
+                    </li>
+                    <li className="flex items-center">
+                      <FaUserAlt />
+                      <span className="ml-2">รายงานรายเดือน</span>
+                    </li>
+                  </ul>
                 )}
               </li>
             </ul>
