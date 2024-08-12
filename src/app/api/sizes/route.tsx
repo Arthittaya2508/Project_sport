@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import db from "../../lib/db";
 
-// Fetch all products
+// Fetch all sizes
 export async function GET() {
   try {
     const [rows] = await db.query("SELECT * FROM sizes");
@@ -15,44 +15,19 @@ export async function GET() {
   }
 }
 
-// Add a new product
+// Add a new size
 export async function POST(request: Request) {
   try {
     const data = await request.json();
-    const { sizes_name } = data;
+    const { name } = data;
 
-    const [result] = await db.query(
-      `INSERT INTO products (sizes_name) 
-       VALUES (?)`,
-      [sizes_name]
-    );
+    const [result] = await db.query(`INSERT INTO sizes (name) VALUES (?)`, [
+      name,
+    ]);
 
     return NextResponse.json({ success: true, result });
   } catch (error) {
-    console.error("Error inserting sizes:", error);
-    return NextResponse.json({ error: "Failed to add sizes" }, { status: 500 });
-  }
-}
-
-// Update an existing product
-export async function PUT(request: Request) {
-  try {
-    const data = await request.json();
-    const { sizes_id, sizes_name } = data;
-
-    const [result] = await db.query(
-      `UPDATE products 
-       SET sizes_id = ?, sizes_name 
-       WHERE id = ?`,
-      [sizes_id, sizes_name]
-    );
-
-    return NextResponse.json({ success: true, result });
-  } catch (error) {
-    console.error("Error updating sizes:", error);
-    return NextResponse.json(
-      { error: "Failed to update sizes" },
-      { status: 500 }
-    );
+    console.error("Error inserting size:", error);
+    return NextResponse.json({ error: "Failed to add size" }, { status: 500 });
   }
 }

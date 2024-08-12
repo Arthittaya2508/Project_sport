@@ -11,10 +11,9 @@ const ProductForm = () => {
   const [cost_price, setCost] = useState("");
   const [type_id, setType] = useState("");
   const [band_id, setBand] = useState("");
-  const [pro_id, setProId] = useState("");
-  const [color, setColor] = useState("");
-  const [gender, setGender] = useState("");
-  const [size, setSize] = useState("");
+  const [color_id, setColorId] = useState("");
+  const [gender_id, setGenderId] = useState("");
+  const [size_id, setSizeId] = useState("");
   const [quantity, setQuantity] = useState("");
   const [types, setTypes] = useState([]);
   const [bands, setBands] = useState([]);
@@ -24,69 +23,40 @@ const ProductForm = () => {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  // Fetch data for each select option individually
   useEffect(() => {
-    const fetchTypes = async () => {
+    const fetchOptions = async () => {
       try {
-        const res = await fetch("/api/types");
-        const data = await res.json();
-        setTypes(data);
+        const [typesRes, bandsRes, colorsRes, gendersRes, sizesRes] =
+          await Promise.all([
+            fetch("/api/types"),
+            fetch("/api/bands"),
+            fetch("/api/colors"),
+            fetch("/api/genders"),
+            fetch("/api/sizes"),
+          ]);
+
+        const [typesData, bandsData, colorsData, gendersData, sizesData] =
+          await Promise.all([
+            typesRes.json(),
+            bandsRes.json(),
+            colorsRes.json(),
+            gendersRes.json(),
+            sizesRes.json(),
+          ]);
+
+        // Set state with correct field names
+        setTypes(typesData);
+        setBands(bandsData);
+        setColors(colorsData);
+        setGenders(gendersData);
+        setSizes(sizesData);
       } catch (error) {
-        console.error("Error fetching types:", error);
-        setError("An error occurred while fetching types.");
+        console.error("Error fetching options:", error);
+        setError("An error occurred while fetching data.");
       }
     };
 
-    const fetchBands = async () => {
-      try {
-        const res = await fetch("/api/bands");
-        const data = await res.json();
-        setBands(data);
-      } catch (error) {
-        console.error("Error fetching bands:", error);
-        setError("An error occurred while fetching bands.");
-      }
-    };
-
-    const fetchColors = async () => {
-      try {
-        const res = await fetch("/api/colors");
-        const data = await res.json();
-        setColors(data);
-      } catch (error) {
-        console.error("Error fetching colors:", error);
-        setError("An error occurred while fetching colors.");
-      }
-    };
-
-    const fetchGenders = async () => {
-      try {
-        const res = await fetch("/api/genders");
-        const data = await res.json();
-        setGenders(data);
-      } catch (error) {
-        console.error("Error fetching genders:", error);
-        setError("An error occurred while fetching genders.");
-      }
-    };
-
-    const fetchSizes = async () => {
-      try {
-        const res = await fetch("/api/sizes");
-        const data = await res.json();
-        setSizes(data);
-      } catch (error) {
-        console.error("Error fetching sizes:", error);
-        setError("An error occurred while fetching sizes.");
-      }
-    };
-
-    // Fetch all data
-    fetchTypes();
-    fetchBands();
-    fetchColors();
-    fetchGenders();
-    fetchSizes();
+    fetchOptions();
   }, []);
 
   const handleChange = (
@@ -115,17 +85,14 @@ const ProductForm = () => {
       case "band_id":
         setBand(value);
         break;
-      case "pro_id":
-        setProId(value);
+      case "color_id":
+        setColorId(value);
         break;
-      case "color":
-        setColor(value);
+      case "gender_id":
+        setGenderId(value);
         break;
-      case "gender":
-        setGender(value);
-        break;
-      case "size":
-        setSize(value);
+      case "size_id":
+        setSizeId(value);
         break;
       case "quantity":
         setQuantity(value);
@@ -147,10 +114,9 @@ const ProductForm = () => {
     };
 
     const productDetailData = {
-      pro_id,
-      color,
-      gender,
-      size,
+      color_id,
+      gender_id,
+      size_id,
       quantity,
     };
 
@@ -176,7 +142,7 @@ const ProductForm = () => {
           Swal.fire({
             icon: "success",
             title: "Success!",
-            text: "Product and details added successfully.",
+            text: "Product and details have been successfully added.",
             confirmButtonText: "OK",
           }).then(() => {
             router.push("/admin/products");
@@ -184,14 +150,32 @@ const ProductForm = () => {
         } else {
           const detailResult = await detailResponse.json();
           setError(detailResult.error || "Failed to add product details");
+          Swal.fire({
+            icon: "error",
+            title: "Error!",
+            text: detailResult.error || "Failed to add product details",
+            confirmButtonText: "OK",
+          });
         }
       } else {
         const productResult = await productResponse.json();
         setError(productResult.error || "Failed to add product");
+        Swal.fire({
+          icon: "error",
+          title: "Error!",
+          text: productResult.error || "Failed to add product",
+          confirmButtonText: "OK",
+        });
       }
     } catch (error) {
       console.error("Error:", error);
-      setError("An error occurred");
+      setError("An error occurred while processing your request.");
+      Swal.fire({
+        icon: "error",
+        title: "Error!",
+        text: "An error occurred while processing your request.",
+        confirmButtonText: "OK",
+      });
     }
   };
 
@@ -249,7 +233,7 @@ const ProductForm = () => {
               </option>
               {types.map((type: any) => (
                 <option key={type.id} value={type.id}>
-                  {type.name}
+                  {type.type_name} {/* Use type_name instead of name */}
                 </option>
               ))}
             </select>
@@ -276,7 +260,7 @@ const ProductForm = () => {
               </option>
               {bands.map((band: any) => (
                 <option key={band.id} value={band.id}>
-                  {band.name}
+                  {band.band_name} {/* Use band_name instead of name */}
                 </option>
               ))}
             </select>
@@ -284,15 +268,15 @@ const ProductForm = () => {
 
           <div className="mb-4">
             <label
-              htmlFor="color"
+              htmlFor="color_id"
               className="block text-sm font-medium text-gray-700"
             >
               Color
             </label>
             <select
-              id="color"
-              name="color"
-              value={color}
+              id="color_id"
+              name="color_id"
+              value={color_id}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               required
@@ -302,7 +286,7 @@ const ProductForm = () => {
               </option>
               {colors.map((color: any) => (
                 <option key={color.id} value={color.id}>
-                  {color.name}
+                  {color.color_name} {/* Use color_name instead of name */}
                 </option>
               ))}
             </select>
@@ -310,15 +294,15 @@ const ProductForm = () => {
 
           <div className="mb-4">
             <label
-              htmlFor="gender"
+              htmlFor="gender_id"
               className="block text-sm font-medium text-gray-700"
             >
               Gender
             </label>
             <select
-              id="gender"
-              name="gender"
-              value={gender}
+              id="gender_id"
+              name="gender_id"
+              value={gender_id}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               required
@@ -328,7 +312,7 @@ const ProductForm = () => {
               </option>
               {genders.map((gender: any) => (
                 <option key={gender.id} value={gender.id}>
-                  {gender.name}
+                  {gender.gender_name} {/* Use gender_name instead of name */}
                 </option>
               ))}
             </select>
@@ -336,15 +320,15 @@ const ProductForm = () => {
 
           <div className="mb-4">
             <label
-              htmlFor="size"
+              htmlFor="size_id"
               className="block text-sm font-medium text-gray-700"
             >
               Size
             </label>
             <select
-              id="size"
-              name="size"
-              value={size}
+              id="size_id"
+              name="size_id"
+              value={size_id}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               required
@@ -354,7 +338,7 @@ const ProductForm = () => {
               </option>
               {sizes.map((size: any) => (
                 <option key={size.id} value={size.id}>
-                  {size.name}
+                  {size.size_name} {/* Use size_name instead of name */}
                 </option>
               ))}
             </select>
@@ -379,13 +363,18 @@ const ProductForm = () => {
           </div>
         </div>
       </div>
-      {error && <p className="text-red-500">{error}</p>}
+
       <button
         type="submit"
-        className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
       >
         Add Product
       </button>
+      {error && (
+        <div className="mt-4 text-red-600">
+          <p>{error}</p>
+        </div>
+      )}
     </form>
   );
 };

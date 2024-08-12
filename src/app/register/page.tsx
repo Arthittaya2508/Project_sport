@@ -1,177 +1,150 @@
 "use client";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import Swal from "sweetalert2"; // Import SweetAlert2
 
-const RegisterPage = () => {
-  const [name, setName] = useState("");
-  const [lastname, setLastname] = useState("");
-  const [address, setAddress] = useState("");
-  const [telephone, setTelephone] = useState("");
-  const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
+const Register = () => {
+  const [formData, setFormData] = useState({
+    name: "",
+    lastname: "",
+    address: "",
+    telephone: "",
+    email: "",
+    username: "",
+    password: "",
+    image: "",
+  });
+
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const data = {
-      name,
-      lastname,
-      address,
-      telephone,
-      email,
-      username,
-      password,
-    };
+    const response = await fetch("/api/registers", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
 
-    try {
-      const response = await fetch("/api/users", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
+    if (response.ok) {
+      Swal.fire({
+        title: "Success!",
+        text: "Registration completed successfully!",
+        icon: "success",
+        confirmButtonText: "OK",
+      }).then(() => {
+        setIsSubmitted(true); // Set the state to indicate the form has been submitted
+        // Redirect after a short delay to allow the alert to be seen
+        setTimeout(() => {
+          window.location.href = "/success";
+        }, 1500);
       });
-
-      if (response.ok) {
-        router.push("/register/success"); // Redirect to a success page or another route
-      } else {
-        const result = await response.json();
-        setError(result.error || "Failed to register user");
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      setError("An error occurred");
+    } else {
+      Swal.fire({
+        title: "Error!",
+        text: "Registration failed. Please try again.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+      console.error("Registration failed.");
     }
   };
 
   return (
-    <div className="max-w-md mx-auto p-4 bg-white shadow-md rounded-lg">
-      <h2 className="text-xl font-semibold mb-4">Register</h2>
-      {error && <p className="text-red-500 mb-4">{error}</p>}
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="flex flex-col">
-          <label
-            htmlFor="name"
-            className="text-sm font-medium text-gray-700 mb-1"
-          >
-            Name:
-          </label>
-          <input
-            id="name"
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
-        <div className="flex flex-col">
-          <label
-            htmlFor="lastname"
-            className="text-sm font-medium text-gray-700 mb-1"
-          >
-            Lastname:
-          </label>
-          <input
-            id="lastname"
-            type="text"
-            value={lastname}
-            onChange={(e) => setLastname(e.target.value)}
-            className="p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
-        <div className="flex flex-col">
-          <label
-            htmlFor="address"
-            className="text-sm font-medium text-gray-700 mb-1"
-          >
-            Address:
-          </label>
-          <input
-            id="address"
-            type="text"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            className="p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
-        <div className="flex flex-col">
-          <label
-            htmlFor="telephone"
-            className="text-sm font-medium text-gray-700 mb-1"
-          >
-            Telephone:
-          </label>
-          <input
-            id="telephone"
-            type="text"
-            value={telephone}
-            onChange={(e) => setTelephone(e.target.value)}
-            className="p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
-        <div className="flex flex-col">
-          <label
-            htmlFor="email"
-            className="text-sm font-medium text-gray-700 mb-1"
-          >
-            Email:
-          </label>
-          <input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
-        <div className="flex flex-col">
-          <label
-            htmlFor="username"
-            className="text-sm font-medium text-gray-700 mb-1"
-          >
-            Username:
-          </label>
-          <input
-            id="username"
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            className="p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
-        <div className="flex flex-col">
-          <label
-            htmlFor="password"
-            className="text-sm font-medium text-gray-700 mb-1"
-          >
-            Password:
-          </label>
-          <input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
-        <button
-          type="submit"
-          className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
+        <h2 className="text-2xl font-bold text-center text-gray-800">
           Register
-        </button>
-      </form>
+        </h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            placeholder="Name"
+            className="w-full p-3 border border-gray-300 rounded"
+            required
+          />
+          <input
+            type="text"
+            name="lastname"
+            value={formData.lastname}
+            onChange={handleChange}
+            placeholder="Lastname"
+            className="w-full p-3 border border-gray-300 rounded"
+            required
+          />
+          <input
+            type="text"
+            name="address"
+            value={formData.address}
+            onChange={handleChange}
+            placeholder="Address"
+            className="w-full p-3 border border-gray-300 rounded"
+            required
+          />
+          <input
+            type="text"
+            name="telephone"
+            value={formData.telephone}
+            onChange={handleChange}
+            placeholder="Telephone"
+            className="w-full p-3 border border-gray-300 rounded"
+            required
+          />
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="Email"
+            className="w-full p-3 border border-gray-300 rounded"
+            required
+          />
+          <input
+            type="text"
+            name="username"
+            value={formData.username}
+            onChange={handleChange}
+            placeholder="Username"
+            className="w-full p-3 border border-gray-300 rounded"
+            required
+          />
+          <input
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            placeholder="Password"
+            className="w-full p-3 border border-gray-300 rounded"
+            required
+          />
+          <input
+            type="text"
+            name="image"
+            value={formData.image}
+            onChange={handleChange}
+            placeholder="Image URL"
+            className="w-full p-3 border border-gray-300 rounded"
+          />
+          <button
+            type="submit"
+            className="w-full py-3 text-white bg-blue-600 rounded hover:bg-blue-700"
+          >
+            Register
+          </button>
+        </form>
+      </div>
     </div>
   );
 };
 
-export default RegisterPage;
+export default Register;

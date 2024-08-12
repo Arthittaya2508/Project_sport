@@ -1,4 +1,3 @@
-// app/api/users/route.ts
 import { NextResponse } from "next/server";
 import db from "../../lib/db";
 
@@ -17,14 +16,21 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const data = await request.json();
-    const { name, lastname, address, telephone, email, username, password } =
-      data;
+    const {
+      name,
+      lastname,
+      address,
+      telephone,
+      email,
+      username,
+      password,
+      image,
+    } = data;
 
-    // Insert user data into the database
     const [result] = await db.query(
-      `INSERT INTO users (name, lastname, address, telephone, email, username, password)
-       VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [name, lastname, address, telephone, email, username, password]
+      `INSERT INTO users (name, lastname, address, telephone, email, username, password, image)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [name, lastname, address, telephone, email, username, password, image]
     );
 
     return NextResponse.json({ success: true, result });

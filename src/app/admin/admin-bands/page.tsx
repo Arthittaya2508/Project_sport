@@ -2,6 +2,7 @@
 import React, { Suspense, ReactNode } from "react";
 import Sidebar from "./sidebar/sidebar";
 import Navbar from "./nav/nav";
+import BandForm from "./bands/band";
 
 export default function AdminLayoutPage() {
   return (
@@ -12,7 +13,12 @@ export default function AdminLayoutPage() {
       {/* Main Content */}
       <div className="flex-grow">
         <Navbar />
-        <Suspense fallback={<>loading</>}>{/* แสดงหน้าหลัก */}</Suspense>
+        <Suspense fallback={<>loading</>}>
+          {/* แสดงหน้าหลัก */}
+          <div className="bg-slate-50 h-screen">
+            <BandForm />
+          </div>
+        </Suspense>
       </div>
     </div>
   );
