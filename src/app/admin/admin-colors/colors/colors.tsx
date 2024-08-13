@@ -1,22 +1,23 @@
+"use client";
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 
-interface Band {
+interface Colors {
   id: number; // Assuming 'id' is the primary key in your database
-  band_id: number; // This seems redundant with 'id'; consider using just 'id'
-  band_name: string;
+  color_id: number; // This seems redundant with 'id'; consider using just 'id'
+  color_name: string;
 }
 
-const BandForm: React.FC = () => {
-  const [bandName, setBandName] = useState("");
-  const [bands, setBands] = useState<Band[]>([]);
+const colorForm: React.FC = () => {
+  const [colorName, setColorName] = useState("");
+  const [colors, setColor] = useState<Colors[]>([]);
 
-  const fetchBands = async () => {
+  const fetchColors = async () => {
     try {
-      const response = await fetch("/api/bands");
+      const response = await fetch("/api/colors");
       const data = await response.json();
       if (Array.isArray(data)) {
-        setBands(data);
+        setColor(data);
       } else {
         console.error("Unexpected data format", data);
       }
@@ -28,51 +29,51 @@ const BandForm: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await fetch("/api/bands", {
+      await fetch("/api/colors", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ band_name: bandName }),
+        body: JSON.stringify({ color_name: colorName }),
       });
-      setBandName("");
-      fetchBands();
+      setColorName("");
+      fetchColors();
     } catch (error) {
       console.error("Error adding band:", error);
     }
   };
 
-  const handleEdit = async (bandId: number, newName: string) => {
+  const handleEdit = async (colorId: number, newName: string) => {
     try {
-      await fetch("/api/bands", {
+      await fetch("/api/colors", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ band_id: bandId, band_name: newName }), // Updated key
+        body: JSON.stringify({ color_id: colorId, color_name: newName }), // Updated key
       });
-      fetchBands();
+      fetchColors();
     } catch (error) {
       console.error("Error editing band:", error);
     }
   };
 
-  const handleDelete = async (bandId: number) => {
+  const handleDelete = async (colorId: number) => {
     try {
-      await fetch("/api/bands", {
+      await fetch("/api/colors", {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ band_id: bandId }), // Updated key
+        body: JSON.stringify({ color_id: colorId }), // Updated key
       });
-      fetchBands();
+      fetchColors();
     } catch (error) {
       console.error("Error deleting band:", error);
     }
   };
 
-  const confirmEdit = (bandId: number, currentName: string) => {
+  const confirmEdit = (colorId: number, currentName: string) => {
     Swal.fire({
       title: "Edit Band Name",
       input: "text",
@@ -82,13 +83,13 @@ const BandForm: React.FC = () => {
       cancelButtonText: "Cancel",
     }).then((result) => {
       if (result.isConfirmed && result.value) {
-        handleEdit(bandId, result.value);
+        handleEdit(colorId, result.value);
         Swal.fire("Saved!", "The band name has been updated.", "success");
       }
     });
   };
 
-  const confirmDelete = (bandId: number) => {
+  const confirmDelete = (colorId: number) => {
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -98,31 +99,31 @@ const BandForm: React.FC = () => {
       cancelButtonText: "No, cancel!",
     }).then((result) => {
       if (result.isConfirmed) {
-        handleDelete(bandId);
+        handleDelete(colorId);
         Swal.fire("Deleted!", "The band has been deleted.", "success");
       }
     });
   };
 
   useEffect(() => {
-    fetchBands();
+    fetchColors();
   }, []);
 
   return (
     <div className="p-4 space-y-4">
       {/* Add Band Card */}
       <div className="bg-white shadow-md rounded-lg p-4 ">
-        <h2 className="text-xl font-semibold mb-4">Add Band</h2>
+        <h2 className="text-xl font-semibold mb-4">Add Bsize</h2>
         <form onSubmit={handleSubmit} className="space-x-4 flex">
           <div>
-            <label htmlFor="bandName" className="block mb-1">
+            <label htmlFor="sizeName" className="block mb-1">
               Name
             </label>
             <input
-              id="bandName"
+              id="colorName"
               type="text"
-              value={bandName}
-              onChange={(e) => setBandName(e.target.value)}
+              value={colorName}
+              onChange={(e) => setColorName(e.target.value)}
               className="border border-gray-300 p-2 rounded w-96"
               required
             />
@@ -148,20 +149,22 @@ const BandForm: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {bands.map((band) => (
-              <tr key={band.band_id}>
-                <td className="border px-4 py-2">{band.band_id}</td>
-                <td className="border px-4 py-2">{band.band_name}</td>
+            {colors.map((color) => (
+              <tr key={color.color_id}>
+                <td className="border px-4 py-2">{color.color_id}</td>
+                <td className="border px-4 py-2">{color.color_name}</td>
                 <td className="border px-4 py-2">
                   <button
                     className="bg-yellow-500 text-white p-1 rounded mr-2"
-                    onClick={() => confirmEdit(band.band_id, band.band_name)}
+                    onClick={() =>
+                      confirmEdit(color.color_id, color.color_name)
+                    }
                   >
                     Edit
                   </button>
                   <button
                     className="bg-red-500 text-white p-1 rounded"
-                    onClick={() => confirmDelete(band.band_id)}
+                    onClick={() => confirmDelete(color.color_id)}
                   >
                     Delete
                   </button>
@@ -175,4 +178,4 @@ const BandForm: React.FC = () => {
   );
 };
 
-export default BandForm;
+export default colorForm;

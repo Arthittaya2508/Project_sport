@@ -27,13 +27,35 @@ export async function POST(request: Request) {
       cost_price,
       type_id,
       band_id,
+      color_id,
+      size_id,
+      gender_id,
+      quantity,
     } = data;
 
+    // Debug log
+    console.log("Received data:", data);
+
     const [result] = await db.query(
-      `INSERT INTO products (pro_name, pro_des,  pro_image, sale_price, cost_price, type_id, band_id) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-      [pro_name, pro_des, pro_image, sale_price, cost_price, type_id, band_id]
+      `INSERT INTO products (pro_name, pro_des, pro_image, sale_price, cost_price, type_id, band_id, color_id, size_id, gender_id, quantity) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        pro_name,
+        pro_des,
+        pro_image,
+        sale_price,
+        cost_price,
+        type_id,
+        band_id,
+        color_id,
+        size_id,
+        gender_id,
+        quantity,
+      ]
     );
+
+    // Debug log
+    console.log("Query result:", result);
 
     return NextResponse.json({ success: true, result });
   } catch (error) {
@@ -53,17 +75,20 @@ export async function PUT(request: Request) {
       id,
       pro_name,
       pro_des,
-
       pro_image,
       sale_price,
       cost_price,
       type_id,
       band_id,
+      color_id,
+      size_id,
+      gender_id,
+      quantity,
     } = data;
 
     const [result] = await db.query(
       `UPDATE products 
-       SET pro_name = ?, pro_des = ?,  pro_image = ?, sale_price = ?, cost_price = ?, type_id = ?, band_id = ?
+       SET pro_name = ?, pro_des = ?, pro_image = ?, sale_price = ?, cost_price = ?, type_id = ?, band_id = ?, color_id = ?, size_id = ?, gender_id = ?, quantity =? 
        WHERE id = ?`,
       [
         pro_name,
@@ -73,6 +98,10 @@ export async function PUT(request: Request) {
         cost_price,
         type_id,
         band_id,
+        color_id,
+        size_id,
+        gender_id,
+        quantity,
         id,
       ]
     );

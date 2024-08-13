@@ -1,22 +1,22 @@
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 
-interface Band {
+interface Sizes {
   id: number; // Assuming 'id' is the primary key in your database
-  band_id: number; // This seems redundant with 'id'; consider using just 'id'
-  band_name: string;
+  size_id: number; // This seems redundant with 'id'; consider using just 'id'
+  size_name: string;
 }
 
-const BandForm: React.FC = () => {
-  const [bandName, setBandName] = useState("");
-  const [bands, setBands] = useState<Band[]>([]);
+const SizeForm: React.FC = () => {
+  const [sizeName, setSizeName] = useState("");
+  const [sizes, setSizes] = useState<Sizes[]>([]);
 
-  const fetchBands = async () => {
+  const fetchSizes = async () => {
     try {
-      const response = await fetch("/api/bands");
+      const response = await fetch("/api/sizes");
       const data = await response.json();
       if (Array.isArray(data)) {
-        setBands(data);
+        setSizes(data);
       } else {
         console.error("Unexpected data format", data);
       }
@@ -28,45 +28,45 @@ const BandForm: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await fetch("/api/bands", {
+      await fetch("/api/sizes", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ band_name: bandName }),
+        body: JSON.stringify({ size_name: sizeName }),
       });
-      setBandName("");
-      fetchBands();
+      setSizeName("");
+      fetchSizes();
     } catch (error) {
       console.error("Error adding band:", error);
     }
   };
 
-  const handleEdit = async (bandId: number, newName: string) => {
+  const handleEdit = async (sizeId: number, newName: string) => {
     try {
-      await fetch("/api/bands", {
+      await fetch("/api/sizes", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ band_id: bandId, band_name: newName }), // Updated key
+        body: JSON.stringify({ size_id: sizeId, size_name: newName }), // Updated key
       });
-      fetchBands();
+      fetchSizes();
     } catch (error) {
       console.error("Error editing band:", error);
     }
   };
 
-  const handleDelete = async (bandId: number) => {
+  const handleDelete = async (sizeId: number) => {
     try {
-      await fetch("/api/bands", {
+      await fetch("/api/sizes", {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ band_id: bandId }), // Updated key
+        body: JSON.stringify({ size_id: sizeId }), // Updated key
       });
-      fetchBands();
+      fetchSizes();
     } catch (error) {
       console.error("Error deleting band:", error);
     }
@@ -105,24 +105,24 @@ const BandForm: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchBands();
+    fetchSizes();
   }, []);
 
   return (
     <div className="p-4 space-y-4">
       {/* Add Band Card */}
       <div className="bg-white shadow-md rounded-lg p-4 ">
-        <h2 className="text-xl font-semibold mb-4">Add Band</h2>
+        <h2 className="text-xl font-semibold mb-4">Add Bsize</h2>
         <form onSubmit={handleSubmit} className="space-x-4 flex">
           <div>
-            <label htmlFor="bandName" className="block mb-1">
+            <label htmlFor="sizeName" className="block mb-1">
               Name
             </label>
             <input
-              id="bandName"
+              id="sizeName"
               type="text"
-              value={bandName}
-              onChange={(e) => setBandName(e.target.value)}
+              value={sizeName}
+              onChange={(e) => setSizeName(e.target.value)}
               className="border border-gray-300 p-2 rounded w-96"
               required
             />
@@ -148,20 +148,20 @@ const BandForm: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {bands.map((band) => (
-              <tr key={band.band_id}>
-                <td className="border px-4 py-2">{band.band_id}</td>
-                <td className="border px-4 py-2">{band.band_name}</td>
+            {sizes.map((size) => (
+              <tr key={size.size_id}>
+                <td className="border px-4 py-2">{size.size_id}</td>
+                <td className="border px-4 py-2">{size.size_name}</td>
                 <td className="border px-4 py-2">
                   <button
                     className="bg-yellow-500 text-white p-1 rounded mr-2"
-                    onClick={() => confirmEdit(band.band_id, band.band_name)}
+                    onClick={() => confirmEdit(size.size_id, size.size_name)}
                   >
                     Edit
                   </button>
                   <button
                     className="bg-red-500 text-white p-1 rounded"
-                    onClick={() => confirmDelete(band.band_id)}
+                    onClick={() => confirmDelete(size.size_id)}
                   >
                     Delete
                   </button>
@@ -175,4 +175,4 @@ const BandForm: React.FC = () => {
   );
 };
 
-export default BandForm;
+export default SizeForm;

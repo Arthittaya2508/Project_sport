@@ -22,7 +22,8 @@ export async function POST(request: Request) {
     const { band_name } = data;
 
     const [result] = await db.query(
-      "INSERT INTO bands (band_name) VALUES (?)",
+      `INSERT INTO bands (band_name) 
+       VALUES (?)`,
       [band_name]
     );
 
@@ -37,11 +38,13 @@ export async function POST(request: Request) {
 export async function PUT(request: Request) {
   try {
     const data = await request.json();
-    const { id, band_name } = data;
+    const { band_id, band_name } = data;
 
     const [result] = await db.query(
-      "UPDATE bands SET band_name = ? WHERE id = ?",
-      [band_name, id]
+      `UPDATE bands 
+       SET band_name = ? 
+       WHERE id = ?`,
+      [band_name, band_id] // Ensure band_id is used
     );
 
     return NextResponse.json({ success: true, result });
@@ -57,9 +60,14 @@ export async function PUT(request: Request) {
 // Delete an existing band
 export async function DELETE(request: Request) {
   try {
-    const { id } = await request.json();
+    const data = await request.json();
+    const { band_id } = data;
 
-    const [result] = await db.query("DELETE FROM bands WHERE id = ?", [id]);
+    const [result] = await db.query(
+      `DELETE FROM bands 
+       WHERE id = ?`,
+      [band_id] // Ensure band_id is used
+    );
 
     return NextResponse.json({ success: true, result });
   } catch (error) {

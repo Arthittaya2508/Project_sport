@@ -2,7 +2,7 @@
 import React, { Suspense, ReactNode } from "react";
 import Sidebar from "./sidebar/sidebar";
 import Navbar from "./nav/nav";
-import ProductTable from "./product-detail/pro-detail";
+import TypeForm from "./type/types";
 
 export default function AdminLayoutPage() {
   return (
@@ -16,7 +16,7 @@ export default function AdminLayoutPage() {
         <Suspense fallback={<>loading</>}>
           {/* แสดงหน้าหลัก */}
           <div className="bg-slate-50 h-screen">
-            <ProductTable />
+            <TypeForm />
           </div>
         </Suspense>
       </div>
