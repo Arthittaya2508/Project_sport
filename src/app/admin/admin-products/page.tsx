@@ -2,7 +2,7 @@
 import React, { Suspense, ReactNode } from "react";
 import Sidebar from "./sidebar/sidebar";
 import Navbar from "./nav/nav";
-import ProductForm from "./add-pro/add-pro";
+import Products from "./products/products";
 
 export default function AdminLayoutPage() {
   return (
@@ -14,10 +14,7 @@ export default function AdminLayoutPage() {
       <div className="flex-grow">
         <Navbar />
         <Suspense fallback={<>loading</>}>
-          {/* แสดงหน้าหลัก */}
-          <div className="bg-slate-50 h-screen">
-            <ProductForm />
-          </div>
+          <Products />
         </Suspense>
       </div>
     </div>

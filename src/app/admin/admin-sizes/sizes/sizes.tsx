@@ -1,3 +1,4 @@
+"use client";
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 
@@ -10,6 +11,7 @@ interface Sizes {
 const SizeForm: React.FC = () => {
   const [sizeName, setSizeName] = useState("");
   const [sizes, setSizes] = useState<Sizes[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const fetchSizes = async () => {
     try {
@@ -21,7 +23,7 @@ const SizeForm: React.FC = () => {
         console.error("Unexpected data format", data);
       }
     } catch (error) {
-      console.error("Error fetching bands:", error);
+      console.error("Error fetching sizes:", error);
     }
   };
 
@@ -36,9 +38,10 @@ const SizeForm: React.FC = () => {
         body: JSON.stringify({ size_name: sizeName }),
       });
       setSizeName("");
+      setIsModalOpen(false);
       fetchSizes();
     } catch (error) {
-      console.error("Error adding band:", error);
+      console.error("Error adding size:", error);
     }
   };
 
@@ -53,7 +56,7 @@ const SizeForm: React.FC = () => {
       });
       fetchSizes();
     } catch (error) {
-      console.error("Error editing band:", error);
+      console.error("Error editing size:", error);
     }
   };
 
@@ -68,13 +71,13 @@ const SizeForm: React.FC = () => {
       });
       fetchSizes();
     } catch (error) {
-      console.error("Error deleting band:", error);
+      console.error("Error deleting size:", error);
     }
   };
 
-  const confirmEdit = (bandId: number, currentName: string) => {
+  const confirmEdit = (sizeId: number, currentName: string) => {
     Swal.fire({
-      title: "Edit Band Name",
+      title: "Edit Size Name",
       input: "text",
       inputValue: currentName,
       showCancelButton: true,
@@ -82,13 +85,13 @@ const SizeForm: React.FC = () => {
       cancelButtonText: "Cancel",
     }).then((result) => {
       if (result.isConfirmed && result.value) {
-        handleEdit(bandId, result.value);
-        Swal.fire("Saved!", "The band name has been updated.", "success");
+        handleEdit(sizeId, result.value);
+        Swal.fire("Saved!", "The size name has been updated.", "success");
       }
     });
   };
 
-  const confirmDelete = (bandId: number) => {
+  const confirmDelete = (sizeId: number) => {
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -98,8 +101,8 @@ const SizeForm: React.FC = () => {
       cancelButtonText: "No, cancel!",
     }).then((result) => {
       if (result.isConfirmed) {
-        handleDelete(bandId);
-        Swal.fire("Deleted!", "The band has been deleted.", "success");
+        handleDelete(sizeId);
+        Swal.fire("Deleted!", "The size has been deleted.", "success");
       }
     });
   };
@@ -110,39 +113,60 @@ const SizeForm: React.FC = () => {
 
   return (
     <div className="p-4 space-y-4">
-      {/* Add Band Card */}
-      <div className="bg-white shadow-md rounded-lg p-4 ">
-        <h2 className="text-xl font-semibold mb-4">Add Bsize</h2>
-        <form onSubmit={handleSubmit} className="space-x-4 flex">
-          <div>
-            <label htmlFor="sizeName" className="block mb-1">
-              Name
-            </label>
-            <input
-              id="sizeName"
-              type="text"
-              value={sizeName}
-              onChange={(e) => setSizeName(e.target.value)}
-              className="border border-gray-300 p-2 rounded w-96"
-              required
-            />
+      {/* Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-75">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+            <h2 className="text-xl font-semibold mb-4">Add Size</h2>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label htmlFor="sizeName" className="block mb-1">
+                  Name
+                </label>
+                <input
+                  id="sizeName"
+                  type="text"
+                  value={sizeName}
+                  onChange={(e) => setSizeName(e.target.value)}
+                  className="border border-gray-300 p-2 rounded w-full"
+                  required
+                />
+              </div>
+              <div className="flex justify-end space-x-2">
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="bg-gray-500 text-white p-2 rounded"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="bg-blue-500 text-white p-2 rounded"
+                >
+                  Add Size
+                </button>
+              </div>
+            </form>
           </div>
-          <button
-            type="submit"
-            className="bg-blue-500 text-white p-2 rounded h-10 mt-7"
-          >
-            Add Band
-          </button>
-        </form>
-      </div>
+        </div>
+      )}
 
-      {/* Bands List Card */}
+      {/* Sizes List Card */}
       <div className="bg-white shadow-md rounded-lg p-4">
-        <h2 className="text-xl font-semibold mb-4">Bands List</h2>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-semibold">Sizes List</h2>
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="bg-blue-500 text-white p-2 rounded"
+          >
+            Add Size
+          </button>
+        </div>
         <table className="table-auto w-full">
           <thead>
             <tr>
-              <th className="px-4 py-2">Band ID</th>
+              <th className="px-4 py-2">Size ID</th>
               <th className="px-4 py-2">Name</th>
               <th className="px-4 py-2">Actions</th>
             </tr>

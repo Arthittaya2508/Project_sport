@@ -26,11 +26,11 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="flex relative ">
+    <div className="flex relative">
       <div
         className={`transition-width duration-300 ${
           isOpen ? "w-64" : "w-26"
-        } bg-gray-800 text-white h-full`}
+        } bg-gray-800 text-white h-screen`}
       >
         <div className="p-4 flex flex-col items-center">
           <img
@@ -55,7 +55,7 @@ const Sidebar = () => {
                   isOpen ? "" : "justify-center"
                 }`}
               >
-                <Link href="/dashboard">
+                <Link href="/admin/admin-dash">
                   <div className="flex items-center cursor-pointer">
                     <FaTachometerAlt />
                     {isOpen && (
@@ -88,7 +88,7 @@ const Sidebar = () => {
                 {isCustomerOpen && isOpen && (
                   <ul className="pl-8 mt-2 space-y-2">
                     <li className="flex items-center">
-                      <Link href="/product-all">
+                      <Link href="/admin/admin-products">
                         <div className="flex items-center cursor-pointer">
                           <FaUserAlt />
                           <span className="ml-2">ข้อมูลสินค้า</span>
@@ -96,7 +96,7 @@ const Sidebar = () => {
                       </Link>
                     </li>
                     <li className="flex items-center">
-                      <Link href="/product-categories">
+                      <Link href="/admin/admin-types">
                         <div className="flex items-center cursor-pointer">
                           <FaUserAlt />
                           <span className="ml-2">ข้อมูลประเภท</span>
@@ -104,7 +104,7 @@ const Sidebar = () => {
                       </Link>
                     </li>
                     <li className="flex items-center">
-                      <Link href="/product-brands">
+                      <Link href="/admin/admin-bands">
                         <div className="flex items-center cursor-pointer">
                           <FaUserAlt />
                           <span className="ml-2">ข้อมูลแบนด์</span>
@@ -112,10 +112,26 @@ const Sidebar = () => {
                       </Link>
                     </li>
                     <li className="flex items-center">
-                      <Link href="/product-list">
+                      <Link href="/admin/admin-colors">
                         <div className="flex items-center cursor-pointer">
                           <FaUserAlt />
-                          <span className="ml-2">ข้อมูลรายการสินค้า</span>
+                          <span className="ml-2">ข้อมูลสี</span>
+                        </div>
+                      </Link>
+                    </li>
+                    <li className="flex items-center">
+                      <Link href="/admin/admin-sizes">
+                        <div className="flex items-center cursor-pointer">
+                          <FaUserAlt />
+                          <span className="ml-2">ข้อมูลขนาด</span>
+                        </div>
+                      </Link>
+                    </li>
+                    <li className="flex items-center">
+                      <Link href="/admin/admin-genders">
+                        <div className="flex items-center cursor-pointer">
+                          <FaUserAlt />
+                          <span className="ml-2">ข้อมูลเพศ</span>
                         </div>
                       </Link>
                     </li>
@@ -127,7 +143,7 @@ const Sidebar = () => {
                   isOpen ? "" : "justify-center"
                 }`}
               >
-                <Link href="/customer-info">
+                <Link href="/admin/admin-customer">
                   <div className="flex items-center cursor-pointer">
                     <FaTachometerAlt />
                     {isOpen && (

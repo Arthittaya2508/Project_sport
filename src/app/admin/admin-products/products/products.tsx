@@ -1,7 +1,5 @@
-// pages/products.tsx
-
 import { useState, useEffect } from "react";
-import Link from "next/link";
+import AddProduct from "../addproducts/addproduct";
 
 type Product = {
   pro_name: string;
@@ -19,6 +17,7 @@ type Product = {
 
 export default function Products() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -30,15 +29,19 @@ export default function Products() {
     fetchProducts();
   }, []);
 
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+
   return (
     <div className="container mx-auto p-4">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-xl font-bold">Product List</h1>
-        <Link href="/admin/admin-addproduct">
-          <button className="bg-blue-500 text-white px-4 py-2 rounded">
-            Add Product
-          </button>
-        </Link>
+        <button
+          onClick={openModal}
+          className="bg-blue-500 text-white px-4 py-2 rounded"
+        >
+          Add Product
+        </button>
       </div>
       <table className="min-w-full bg-white">
         <thead>
@@ -91,6 +94,23 @@ export default function Products() {
           ))}
         </tbody>
       </table>
+
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-4 rounded shadow-lg max-w-lg w-full">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold">Add New Product</h2>
+              <button
+                onClick={closeModal}
+                className="text-gray-500 hover:text-gray-800"
+              >
+                X
+              </button>
+            </div>
+            <AddProduct onClose={closeModal} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
