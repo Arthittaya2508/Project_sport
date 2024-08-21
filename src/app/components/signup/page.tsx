@@ -1,8 +1,13 @@
-"use client";
 import { useState } from "react";
+import { AiOutlineClose } from "react-icons/ai";
 import Swal from "sweetalert2";
 
-const Register = () => {
+interface SignUpModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const SignUpModal: React.FC<SignUpModalProps> = ({ isOpen, onClose }) => {
   const [formData, setFormData] = useState({
     name: "",
     lastname: "",
@@ -15,6 +20,8 @@ const Register = () => {
   });
 
   const [isSubmitted, setIsSubmitted] = useState(false);
+
+  if (!isOpen) return null;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -57,11 +64,15 @@ const Register = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold text-center text-gray-800">
-          Register
-        </h2>
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+      <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full relative">
+        <button
+          onClick={onClose}
+          className="absolute top-2 right-2 text-gray-600 hover:text-gray-800"
+        >
+          <AiOutlineClose size={24} />
+        </button>
+        <h2 className="text-xl font-semibold mb-4 text-black">สมัครสมาชิก</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="text"
@@ -146,4 +157,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default SignUpModal;

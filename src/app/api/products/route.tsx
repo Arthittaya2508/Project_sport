@@ -15,53 +15,37 @@ export async function GET() {
   }
 }
 
-// Add a new product
+// Add multiple products
 export async function POST(request: Request) {
   try {
-    const data = await request.json();
-    const {
-      pro_name,
-      pro_des,
-      pro_image,
-      sale_price,
-      cost_price,
-      type_id,
-      band_id,
-      color_id,
-      size_id,
-      gender_id,
-      quantity,
-    } = data;
+    const products = await request.json();
+    const insertPromises = products.map((product: any) => {
+      return db.query(
+        `INSERT INTO products (pro_name, pro_des, pro_image, sale_price, cost_price, type_id, band_id, color_id, size_id, gender_id, quantity) 
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          product.pro_name,
+          product.pro_des,
+          product.pro_image,
+          product.sale_price,
+          product.cost_price,
+          product.type_id,
+          product.band_id,
+          product.color_id,
+          product.size_id,
+          product.gender_id,
+          product.quantity,
+        ]
+      );
+    });
 
-    // Debug log
-    console.log("Received data:", data);
+    await Promise.all(insertPromises);
 
-    const [result] = await db.query(
-      `INSERT INTO products (pro_name, pro_des, pro_image, sale_price, cost_price, type_id, band_id, color_id, size_id, gender_id, quantity) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [
-        pro_name,
-        pro_des,
-        pro_image,
-        sale_price,
-        cost_price,
-        type_id,
-        band_id,
-        color_id,
-        size_id,
-        gender_id,
-        quantity,
-      ]
-    );
-
-    // Debug log
-    console.log("Query result:", result);
-
-    return NextResponse.json({ success: true, result });
+    return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Error inserting product:", error);
+    console.error("Error inserting products:", error);
     return NextResponse.json(
-      { error: "Failed to add product" },
+      { error: "Failed to add products" },
       { status: 500 }
     );
   }

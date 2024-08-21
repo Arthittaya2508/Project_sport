@@ -1,89 +1,38 @@
-// app/users/page.tsx
-import React from "react";
+// pages/index.tsx
+import Navbar from "./components/navbar/page";
 
-interface User {
-  id: number;
-  name: string;
-  lastname: string;
-  address: string;
-  telephone: string;
-  email: string;
-  username: string;
-  password: string;
-}
-
-async function fetchUsers(): Promise<User[]> {
-  const res = await fetch("http://localhost:3000/api/users", {
-    cache: "no-store", // This will ensure data is fetched on each request
-  });
-  if (!res.ok) {
-    throw new Error("Failed to fetch users");
-  }
-  return res.json();
-}
-
-const UsersPage: React.FC = async () => {
-  const users = await fetchUsers();
-
+const HomePage = () => {
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Users</h1>
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50">
-          <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              ID
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Name
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Last Name
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Address
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Telephone
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Email
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Username
-            </th>
-          </tr>
-        </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
-          {users.map((user) => (
-            <tr key={user.id}>
-              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                {user.id}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {user.name}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {user.lastname}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {user.address}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {user.telephone}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {user.email}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {user.username}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div>
+      <Navbar />
+      <div
+        className="relative h-[600px] bg-cover bg-center"
+        style={{ backgroundImage: "url('../images/bghome.jpg')" }}
+      >
+        {/* Overlay for better text visibility */}
+        <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+
+        <div className="relative z-10 flex flex-col items-center justify-center h-full text-center text-white">
+          <h1 className="text-4xl font-bold mb-4">เฟื่องฟู สปอร์ต</h1>
+          <p className="text-lg mb-6">
+            ขายปลีก-ส่ง ชุดกีฬา เสื้อโฆษณา เฟล็กปริ้นท์ เฟล็กตัด
+          </p>
+          <a
+            href="/products"
+            className="inline-block px-6 py-3 bg-blue-500 text-white font-semibold rounded hover:bg-blue-600 transition"
+          >
+            Shop Now
+          </a>
+        </div>
+      </div>
+      <div className="text-center text-3xl mt-10">
+        <span>จำหน่ายสินค้าทุกแบนรด์ชั้นนำในไทย</span>
+      </div>
+      <div className=" w-[1200px] h-[200px] mx-auto mt-6">
+        <img src="../images/band.jpg" alt="band" />
+      </div>
     </div>
   );
 };
 
-export default UsersPage;
+export default HomePage;
