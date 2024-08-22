@@ -21,21 +21,9 @@ export async function POST(request: Request) {
     const products = await request.json();
     const insertPromises = products.map((product: any) => {
       return db.query(
-        `INSERT INTO products (pro_name, pro_des, pro_image, sale_price, cost_price, type_id, band_id, color_id, size_id, gender_id, quantity) 
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [
-          product.pro_name,
-          product.pro_des,
-          product.pro_image,
-          product.sale_price,
-          product.cost_price,
-          product.type_id,
-          product.band_id,
-          product.color_id,
-          product.size_id,
-          product.gender_id,
-          product.quantity,
-        ]
+        `INSERT INTO products (pro_name, pro_des,type_id, band_id) 
+         VALUES (?, ?, ?, ?,)`,
+        [product.pro_name, product.pro_des, product.type_id, product.band_id]
       );
     });
 
@@ -55,39 +43,13 @@ export async function POST(request: Request) {
 export async function PUT(request: Request) {
   try {
     const data = await request.json();
-    const {
-      id,
-      pro_name,
-      pro_des,
-      pro_image,
-      sale_price,
-      cost_price,
-      type_id,
-      band_id,
-      color_id,
-      size_id,
-      gender_id,
-      quantity,
-    } = data;
+    const { id, pro_name, pro_des, type_id, band_id } = data;
 
     const [result] = await db.query(
       `UPDATE products 
-       SET pro_name = ?, pro_des = ?, pro_image = ?, sale_price = ?, cost_price = ?, type_id = ?, band_id = ?, color_id = ?, size_id = ?, gender_id = ?, quantity =? 
+       SET pro_name = ?, pro_des = ?, pro_image = ?, type_id = ?, band_id = ? 
        WHERE id = ?`,
-      [
-        pro_name,
-        pro_des,
-        pro_image,
-        sale_price,
-        cost_price,
-        type_id,
-        band_id,
-        color_id,
-        size_id,
-        gender_id,
-        quantity,
-        id,
-      ]
+      [pro_name, pro_des, type_id, band_id, id]
     );
 
     return NextResponse.json({ success: true, result });
