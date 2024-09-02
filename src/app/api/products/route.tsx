@@ -19,15 +19,30 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const products = await request.json();
-    const insertPromises = products.map((product: any) => {
-      return db.query(
-        `INSERT INTO products (pro_name, pro_des,type_id, band_id) 
-         VALUES (?, ?, ?, ?,)`,
-        [product.pro_name, product.pro_des, product.type_id, product.band_id]
-      );
-    });
 
-    await Promise.all(insertPromises);
+    // Ensure products is an array
+    if (!Array.isArray(products)) {
+      return NextResponse.json(
+        { error: "Invalid input, expected an array of products" },
+        { status: 400 }
+      );
+    }
+
+    // Generate the SQL query with placeholders
+    const sql = `
+      INSERT INTO products (pro_name, pro_des, type_id, band_id)
+      VALUES ${products.map(() => "(?, ?, ?, ?)").join(", ")}
+    `;
+
+    // Flatten the array of product values into a single array
+    const values = products.flatMap((product) => [
+      product.pro_name,
+      product.pro_des,
+      product.type_id,
+      product.band_id,
+    ]);
+
+    await db.query(sql, values);
 
     return NextResponse.json({ success: true });
   } catch (error) {
@@ -47,7 +62,7 @@ export async function PUT(request: Request) {
 
     const [result] = await db.query(
       `UPDATE products 
-       SET pro_name = ?, pro_des = ?, pro_image = ?, type_id = ?, band_id = ? 
+       SET pro_name = ?, pro_des = ?, type_id = ?, band_id = ? 
        WHERE id = ?`,
       [pro_name, pro_des, type_id, band_id, id]
     );

@@ -7,6 +7,11 @@ const Register = () => {
     name: "",
     lastname: "",
     address: "",
+    province: "",
+    district: "",
+    subDistrict: "",
+    village: "",
+    postalCode: "",
     telephone: "",
     email: "",
     username: "",
@@ -57,37 +62,78 @@ const Register = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold text-center text-gray-800">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 py-8 px-4">
+      <div className="w-full max-w-lg p-8 space-y-6 bg-white rounded-lg shadow-lg">
+        <h2 className="text-3xl font-semibold text-center text-gray-800 mb-6">
           Register
         </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              placeholder="Name"
+              className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+            <input
+              type="text"
+              name="lastname"
+              value={formData.lastname}
+              onChange={handleChange}
+              placeholder="Lastname"
+              className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <input
+              type="text"
+              name="province"
+              value={formData.province}
+              onChange={handleChange}
+              placeholder="Province"
+              className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+            <input
+              type="text"
+              name="district"
+              value={formData.district}
+              onChange={handleChange}
+              placeholder="District"
+              className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <input
+              type="text"
+              name="subDistrict"
+              value={formData.subDistrict}
+              onChange={handleChange}
+              placeholder="Sub-District"
+              className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+            <input
+              type="text"
+              name="village"
+              value={formData.village}
+              onChange={handleChange}
+              placeholder="Village Name"
+              className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
           <input
             type="text"
-            name="name"
-            value={formData.name}
+            name="postalCode"
+            value={formData.postalCode}
             onChange={handleChange}
-            placeholder="Name"
-            className="w-full p-3 border border-gray-300 rounded"
-            required
-          />
-          <input
-            type="text"
-            name="lastname"
-            value={formData.lastname}
-            onChange={handleChange}
-            placeholder="Lastname"
-            className="w-full p-3 border border-gray-300 rounded"
-            required
-          />
-          <input
-            type="text"
-            name="address"
-            value={formData.address}
-            onChange={handleChange}
-            placeholder="Address"
-            className="w-full p-3 border border-gray-300 rounded"
+            placeholder="Postal Code"
+            className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
           <input
@@ -96,7 +142,7 @@ const Register = () => {
             value={formData.telephone}
             onChange={handleChange}
             placeholder="Telephone"
-            className="w-full p-3 border border-gray-300 rounded"
+            className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
           <input
@@ -105,7 +151,7 @@ const Register = () => {
             value={formData.email}
             onChange={handleChange}
             placeholder="Email"
-            className="w-full p-3 border border-gray-300 rounded"
+            className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
           <input
@@ -114,7 +160,7 @@ const Register = () => {
             value={formData.username}
             onChange={handleChange}
             placeholder="Username"
-            className="w-full p-3 border border-gray-300 rounded"
+            className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
           <input
@@ -123,7 +169,7 @@ const Register = () => {
             value={formData.password}
             onChange={handleChange}
             placeholder="Password"
-            className="w-full p-3 border border-gray-300 rounded"
+            className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
           <input
@@ -132,11 +178,11 @@ const Register = () => {
             value={formData.image}
             onChange={handleChange}
             placeholder="Image URL"
-            className="w-full p-3 border border-gray-300 rounded"
+            className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <button
             type="submit"
-            className="w-full py-3 text-white bg-blue-600 rounded hover:bg-blue-700"
+            className="w-full py-3 text-white bg-blue-600 rounded-lg shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             Register
           </button>
