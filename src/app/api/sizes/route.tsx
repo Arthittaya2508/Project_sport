@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import db from "../../lib/db";
 
-// Fetch all bands
+// Fetch all sizes
 export async function GET() {
   try {
     const [rows] = await db.query("SELECT * FROM sizes");
@@ -15,65 +15,61 @@ export async function GET() {
   }
 }
 
-// Add a new band
+// Add a new size
 export async function POST(request: Request) {
   try {
     const data = await request.json();
     const { size_name } = data;
 
     const [result] = await db.query(
-      `INSERT INTO sizes (size_name) 
-       VALUES (?)`,
+      `INSERT INTO sizes (size_name) VALUES (?)`,
       [size_name]
     );
 
     return NextResponse.json({ success: true, result });
   } catch (error) {
-    console.error("Error inserting band:", error);
-    return NextResponse.json({ error: "Failed to add band" }, { status: 500 });
+    console.error("Error inserting size:", error);
+    return NextResponse.json({ error: "Failed to add size" }, { status: 500 });
   }
 }
 
-// Update an existing band
+// Update an existing size
 export async function PUT(request: Request) {
   try {
     const data = await request.json();
     const { size_id, size_name } = data;
 
     const [result] = await db.query(
-      `UPDATE sizes
-       SET size_name = ? 
-       WHERE id = ?`,
-      [size_name, size_id] // Ensure band_id is used
+      `UPDATE sizes SET size_name = ? WHERE size_id = ?`,
+      [size_name, size_id] // Ensure size_id is used
     );
 
     return NextResponse.json({ success: true, result });
   } catch (error) {
-    console.error("Error updating band:", error);
+    console.error("Error updating size:", error);
     return NextResponse.json(
-      { error: "Failed to update band" },
+      { error: "Failed to update size" },
       { status: 500 }
     );
   }
 }
 
-// Delete an existing band
+// Delete an existing size
 export async function DELETE(request: Request) {
   try {
     const data = await request.json();
     const { size_id } = data;
 
     const [result] = await db.query(
-      `DELETE FROM sizes 
-       WHERE id = ?`,
-      [size_id] // Ensure band_id is used
+      `DELETE FROM sizes WHERE size_id = ?`,
+      [size_id] // Ensure size_id is used
     );
 
     return NextResponse.json({ success: true, result });
   } catch (error) {
-    console.error("Error deleting band:", error);
+    console.error("Error deleting size:", error);
     return NextResponse.json(
-      { error: "Failed to delete band" },
+      { error: "Failed to delete size" },
       { status: 500 }
     );
   }

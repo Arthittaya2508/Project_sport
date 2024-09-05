@@ -58,20 +58,37 @@ export async function POST(request: Request) {
 export async function PUT(request: Request) {
   try {
     const data = await request.json();
-    const { id, pro_name, pro_des, type_id, band_id } = data;
+    const { id, pro_name, type_id, band_id } = data;
 
-    const [result] = await db.query(
+    await db.query(
       `UPDATE products 
-       SET pro_name = ?, pro_des = ?, type_id = ?, band_id = ? 
-       WHERE id = ?`,
-      [pro_name, pro_des, type_id, band_id, id]
+       SET pro_name = ?, type_id = ?, band_id = ? 
+       WHERE pro_id = ?`,
+      [pro_name, type_id, band_id, id]
     );
 
-    return NextResponse.json({ success: true, result });
+    return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Error updating product:", error);
     return NextResponse.json(
       { error: "Failed to update product" },
+      { status: 500 }
+    );
+  }
+}
+
+// Delete a product
+export async function DELETE(request: Request) {
+  try {
+    const { id } = await request.json();
+
+    await db.query(`DELETE FROM products WHERE pro_id = ?`, [id]);
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("Error deleting product:", error);
+    return NextResponse.json(
+      { error: "Failed to delete product" },
       { status: 500 }
     );
   }

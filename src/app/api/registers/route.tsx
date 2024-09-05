@@ -4,32 +4,18 @@ import db from "../../lib/db";
 export async function POST(request: Request) {
   try {
     const data = await request.json();
-    console.log("Received data:", data); // เพิ่มบรรทัดนี้เพื่อตรวจสอบข้อมูล
+    const { name, lastname, telephone, email, username, password, image } =
+      data;
 
-    const {
-      name,
-      lastname,
-      address,
-      telephone,
-      email,
-      username,
-      password,
-      image,
-    } = data;
-
-    const query = `
-      INSERT INTO users 
-      (name, lastname, address, telephone, email, username, password, image) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    const userQuery = `
+      INSERT INTO users (name, lastname, telephone, email, username, password, image) 
+      VALUES (?, ?, ?, ?, ?, ?, ?)
     `;
 
-    // ตรวจสอบว่า query มีค่าถูกต้องหรือไม่
-    console.log("Executing query:", query);
-
-    const [result] = await db.query(query, [
+    // Run the query and get the result
+    const [userResult] = await db.query(userQuery, [
       name,
       lastname,
-      address,
       telephone,
       email,
       username,
@@ -37,9 +23,10 @@ export async function POST(request: Request) {
       image,
     ]);
 
-    console.log("Query result:", result); // ตรวจสอบผลลัพธ์
+    // Cast userResult to any to bypass TypeScript error
+    const userId = (userResult as any).insertId;
 
-    return NextResponse.json({ success: true, result });
+    return NextResponse.json({ success: true, userId });
   } catch (error) {
     console.error("Error inserting user:", error);
     return NextResponse.json(

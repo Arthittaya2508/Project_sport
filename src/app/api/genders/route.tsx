@@ -1,79 +1,78 @@
 import { NextResponse } from "next/server";
 import db from "../../lib/db";
 
-// Fetch all bands
+// Fetch all genders
 export async function GET() {
   try {
     const [rows] = await db.query("SELECT * FROM genders");
     return NextResponse.json(rows);
   } catch (error) {
-    console.error("Error fetching sizes:", error);
+    console.error("Error fetching genders:", error);
     return NextResponse.json(
-      { error: "Failed to fetch sizes" },
+      { error: "Failed to fetch genders" },
       { status: 500 }
     );
   }
 }
 
-// Add a new band
+// Add a new gender
 export async function POST(request: Request) {
   try {
     const data = await request.json();
     const { gender_name } = data;
 
     const [result] = await db.query(
-      `INSERT INTO genders (gender_name) 
-       VALUES (?)`,
+      `INSERT INTO genders (gender_name) VALUES (?)`,
       [gender_name]
     );
 
     return NextResponse.json({ success: true, result });
   } catch (error) {
-    console.error("Error inserting band:", error);
-    return NextResponse.json({ error: "Failed to add band" }, { status: 500 });
+    console.error("Error inserting gender:", error);
+    return NextResponse.json(
+      { error: "Failed to add gender" },
+      { status: 500 }
+    );
   }
 }
 
-// Update an existing band
+// Update an existing gender
 export async function PUT(request: Request) {
   try {
     const data = await request.json();
     const { gender_id, gender_name } = data;
 
     const [result] = await db.query(
-      `UPDATE genders
-       SET gender_name = ? 
-       WHERE id = ?`,
-      [gender_name, gender_id] // Ensure band_id is used
+      `UPDATE genders SET gender_name = ? WHERE gender_id = ?`,
+      [gender_name, gender_id] // Ensure gender_id is used
     );
 
     return NextResponse.json({ success: true, result });
   } catch (error) {
-    console.error("Error updating band:", error);
+    console.error("Error updating gender:", error);
     return NextResponse.json(
-      { error: "Failed to update band" },
+      { error: "Failed to update gender" },
       { status: 500 }
     );
   }
 }
 
-// Delete an existing band
+// Delete an existing gender
 export async function DELETE(request: Request) {
   try {
     const data = await request.json();
     const { gender_id } = data;
 
     const [result] = await db.query(
-      `DELETE FROM genders 
-       WHERE id = ?`,
-      [gender_id] // Ensure band_id is used
+      `DELETE FROM genders WHERE gender_id = ?`,
+      [gender_id] // Ensure gender_id is used
     );
 
     return NextResponse.json({ success: true, result });
   } catch (error) {
-    console.error("Error deleting band:", error);
+    console.error("Error deleting gender:", error);
     return NextResponse.json(
-      { error: "Failed to delete band" },
+      { error: "Failed to delete gender" },
       { status: 500 }
     );
   }

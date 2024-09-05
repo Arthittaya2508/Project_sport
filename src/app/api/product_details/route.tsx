@@ -14,82 +14,44 @@ export async function GET() {
     );
   }
 }
-
-// Add multiple products
 export async function POST(request: Request) {
   try {
-    const products = await request.json();
+    const { details } = await request.json();
 
-    const insertPromises = products.map((product: any) => {
-      return db.query(
-        `INSERT INTO product_details (pro_id, color_id, size_id, gender_id, stock_quantity, sku ,pro_image sale_price,cost_price,) 
-         VALUES (?, ?, ?, ?, ?, ?,?,?,?)`,
-        [
-          product.pro_id, // Assuming this is a foreign key referencing the 'products' table
-          product.color_id,
-          product.size_id,
-          product.gender_id,
-          product.stock_quantity,
-          product.sku,
-          product.pro_image,
-          product.sale_price,
-          product.cost_price,
-        ]
+    // Ensure details is an array
+    if (!Array.isArray(details)) {
+      return NextResponse.json(
+        { error: "Invalid input, expected an array of product_details" },
+        { status: 400 }
       );
-    });
+    }
 
-    await Promise.all(insertPromises);
+    // Generate the SQL query with placeholders
+    const sql = `
+      INSERT INTO product_details (pro_id, color_id, size_id, gender_id, stock_quantity, sku, pro_image, sale_price, cost_price)
+      VALUES ${details.map(() => "(?, ?, ?, ?, ?, ?, ?, ?, ?)").join(", ")}
+    `;
+
+    // Flatten the array of product values into a single array
+    const values = details.flatMap((detail) => [
+      detail.pro_id,
+      detail.color_id,
+      detail.size_id,
+      detail.gender_id,
+      detail.stock_quantity,
+      detail.sku,
+      detail.pro_image,
+      detail.sale_price,
+      detail.cost_price,
+    ]);
+
+    await db.query(sql, values);
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Error inserting products:", error);
+    console.error("Error inserting product_details:", error);
     return NextResponse.json(
-      { error: "Failed to add products" },
-      { status: 500 }
-    );
-  }
-}
-
-// Update an existing product detail
-export async function PUT(request: Request) {
-  try {
-    const data = await request.json();
-    const {
-      detail_id, // Assuming 'detail_id' is the primary key for this table
-      pro_id,
-      color_id,
-      size_id,
-      gender_id,
-      stock_quantity,
-      sku,
-      pro_image,
-      sale_price,
-      cost_price,
-    } = data;
-
-    const [result] = await db.query(
-      `UPDATE product_details 
-       SET pro_id = ?, color_id = ?, size_id = ?, gernder_id = ?, stock_quantity = ?, sku = ? ,sale_price = ? , cost_price = ?,
-       WHERE detail_id = ?`,
-      [
-        pro_id,
-        color_id,
-        size_id,
-        gender_id,
-        stock_quantity,
-        sku,
-        pro_image,
-        sale_price,
-        cost_price,
-        detail_id,
-      ]
-    );
-
-    return NextResponse.json({ success: true, result });
-  } catch (error) {
-    console.error("Error updating product details:", error);
-    return NextResponse.json(
-      { error: "Failed to update product details" },
+      { error: "Failed to add product_details" },
       { status: 500 }
     );
   }

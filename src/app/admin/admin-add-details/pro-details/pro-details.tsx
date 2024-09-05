@@ -4,13 +4,12 @@ import Swal from "sweetalert2";
 
 export interface ProductDetails {
   pro_id?: number;
-  product_id: number;
   color_id: number;
   size_id: number;
   gender_id: number;
   stock_quantity: string;
   sku: string;
-  pro_image: string;
+  pro_image: string; // This will now be a URL
   sale_price: string;
   cost_price: string;
 }
@@ -21,24 +20,24 @@ export interface Product {
 }
 
 export interface Color {
-  id: number;
+  color_id: number;
   color_name: string;
 }
 
 export interface Gender {
-  id: number;
+  gender_id: number;
   gender_name: string;
 }
 
 export interface Size {
-  id: number;
+  size_id: number;
   size_name: string;
 }
 
 const ProductDetails = ({ onRequestClose }: { onRequestClose: () => void }) => {
   const [productDetails, setProductDetails] = useState<ProductDetails[]>([
     {
-      product_id: 0,
+      pro_id: 0,
       color_id: 0,
       size_id: 0,
       gender_id: 0,
@@ -91,7 +90,7 @@ const ProductDetails = ({ onRequestClose }: { onRequestClose: () => void }) => {
     setProductDetails([
       ...productDetails,
       {
-        product_id: 0,
+        pro_id: 0,
         color_id: 0,
         size_id: 0,
         gender_id: 0,
@@ -104,62 +103,36 @@ const ProductDetails = ({ onRequestClose }: { onRequestClose: () => void }) => {
     ]);
   };
 
-  const handleFileChange = (index: number, file: File | null) => {
-    const fileName = file ? file.name : "";
-    handleProductDetailsChange(index, "pro_image", fileName);
-  };
-
   const handleSubmit = async () => {
     try {
-      const formData = new FormData();
-      productDetails.forEach((detail, index) => {
-        formData.append(
-          `details[${index}][product_id]`,
-          detail.product_id.toString()
-        );
-        formData.append(
-          `details[${index}][color_id]`,
-          detail.color_id.toString()
-        );
-        formData.append(
-          `details[${index}][size_id]`,
-          detail.size_id.toString()
-        );
-        formData.append(
-          `details[${index}][gender_id]`,
-          detail.gender_id.toString()
-        );
-        formData.append(
-          `details[${index}][stock_quantity]`,
-          detail.stock_quantity
-        );
-        formData.append(`details[${index}][sku]`, detail.sku);
-        formData.append(`details[${index}][sale_price]`, detail.sale_price);
-        formData.append(`details[${index}][cost_price]`, detail.cost_price);
-        formData.append(`details[${index}][pro_image]`, detail.pro_image);
-
-        // Append image files if selected
-        const fileInput = document.querySelector(
-          `input[name="file-${index}"]`
-        ) as HTMLInputElement;
-        if (fileInput?.files?.[0]) {
-          formData.append(`details[${index}][imageFile]`, fileInput.files[0]);
-        }
-      });
+      if (productDetails.length === 0) {
+        Swal.fire("Error", "No product details to add.", "error");
+        return;
+      }
 
       const response = await fetch("/api/product_details", {
         method: "POST",
-        body: formData,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ details: productDetails }), // ส่งเป็น JSON โดยมีคีย์ `details`
       });
 
       if (!response.ok) {
         const errorData = await response.json();
+        console.error("API Error:", errorData.error);
         throw new Error(
           `Failed to add product details: ${errorData.error || "Unknown error"}`
         );
       }
 
-      Swal.fire("Success", "Product details added successfully", "success");
+      Swal.fire(
+        "Success",
+        "Product details added successfully",
+        "success"
+      ).then(() => {
+        onRequestClose(); // ปิดโมดัลเมื่อสำเร็จ
+      });
     } catch (error) {
       console.error("Error adding product details:", error);
       const errorMessage =
@@ -184,11 +157,11 @@ const ProductDetails = ({ onRequestClose }: { onRequestClose: () => void }) => {
                   ชื่อสินค้า
                 </label>
                 <select
-                  value={detail.product_id}
+                  value={detail.pro_id}
                   onChange={(e) =>
                     handleProductDetailsChange(
                       index,
-                      "product_id",
+                      "pro_id",
                       parseInt(e.target.value)
                     )
                   }
@@ -202,187 +175,188 @@ const ProductDetails = ({ onRequestClose }: { onRequestClose: () => void }) => {
                   ))}
                 </select>
               </div>
-
-              {/* Color Selection */}
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">
-                  สี
-                </label>
-                <select
-                  value={detail.color_id}
-                  onChange={(e) =>
-                    handleProductDetailsChange(
-                      index,
-                      "color_id",
-                      parseInt(e.target.value)
-                    )
-                  }
-                  className="border p-2 rounded mb-2 w-full"
-                >
-                  <option value={0}>เลือกสี</option>
-                  {colors.map((color) => (
-                    <option key={color.id} value={color.id}>
-                      {color.color_name}
-                    </option>
-                  ))}
-                </select>
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                {/* SKU */}
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700">
+                    SKU
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="SKU"
+                    value={detail.sku}
+                    onChange={(e) =>
+                      handleProductDetailsChange(index, "sku", e.target.value)
+                    }
+                    className="border p-2 rounded mb-2 w-full"
+                  />
+                </div>
+                {/* Image URL */}
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700">
+                    รูปภาพสินค้า
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="URL รูปภาพสินค้า"
+                    value={detail.pro_image}
+                    onChange={(e) =>
+                      handleProductDetailsChange(
+                        index,
+                        "pro_image",
+                        e.target.value
+                      )
+                    }
+                    className="border p-2 rounded mb-2 w-full"
+                  />
+                </div>
               </div>
-
-              {/* Size Selection */}
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">
-                  ขนาด
-                </label>
-                <select
-                  value={detail.size_id}
-                  onChange={(e) =>
-                    handleProductDetailsChange(
-                      index,
-                      "size_id",
-                      parseInt(e.target.value)
-                    )
-                  }
-                  className="border p-2 rounded mb-2 w-full"
-                >
-                  <option value={0}>เลือกขนาด</option>
-                  {sizes.map((size) => (
-                    <option key={size.id} value={size.id}>
-                      {size.size_name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Gender Selection */}
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">
-                  เพศ
-                </label>
-                <select
-                  value={detail.gender_id}
-                  onChange={(e) =>
-                    handleProductDetailsChange(
-                      index,
-                      "gender_id",
-                      parseInt(e.target.value)
-                    )
-                  }
-                  className="border p-2 rounded mb-2 w-full"
-                >
-                  <option value={0}>เลือกเพศ</option>
-                  {genders.map((gender) => (
-                    <option key={gender.id} value={gender.id}>
-                      {gender.gender_name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Stock Quantity */}
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">
-                  จำนวนสินค้าในสต็อก
-                </label>
-                <input
-                  type="text"
-                  placeholder="จำนวนสินค้าในสต็อก"
-                  value={detail.stock_quantity}
-                  onChange={(e) =>
-                    handleProductDetailsChange(
-                      index,
-                      "stock_quantity",
-                      e.target.value
-                    )
-                  }
-                  className="border p-2 rounded mb-2 w-full"
-                />
-              </div>
-
-              {/* SKU */}
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">
-                  SKU
-                </label>
-                <input
-                  type="text"
-                  placeholder="SKU"
-                  value={detail.sku}
-                  onChange={(e) =>
-                    handleProductDetailsChange(index, "sku", e.target.value)
-                  }
-                  className="border p-2 rounded mb-2 w-full"
-                />
-              </div>
-
-              {/* Sale Price */}
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">
-                  ราคาขาย
-                </label>
-                <input
-                  type="text"
-                  placeholder="ราคาขาย"
-                  value={detail.sale_price}
-                  onChange={(e) =>
-                    handleProductDetailsChange(
-                      index,
-                      "sale_price",
-                      e.target.value
-                    )
-                  }
-                  className="border p-2 rounded mb-2 w-full"
-                />
-              </div>
-
-              {/* Cost Price */}
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">
-                  ราคาทุน
-                </label>
-                <input
-                  type="text"
-                  placeholder="ราคาทุน"
-                  value={detail.cost_price}
-                  onChange={(e) =>
-                    handleProductDetailsChange(
-                      index,
-                      "cost_price",
-                      e.target.value
-                    )
-                  }
-                  className="border p-2 rounded mb-2 w-full"
-                />
-              </div>
-
-              {/* Image Upload */}
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">
-                  รูปภาพสินค้า
-                </label>
-                <input
-                  type="file"
-                  name={`file-${index}`}
-                  onChange={(e) =>
-                    handleFileChange(index, e.target.files?.[0] || null)
-                  }
-                  className="border p-2 rounded mb-2 w-full"
-                />
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                {/* Color Selection */}
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700">
+                    สี
+                  </label>
+                  <select
+                    value={detail.color_id}
+                    onChange={(e) =>
+                      handleProductDetailsChange(
+                        index,
+                        "color_id",
+                        parseInt(e.target.value)
+                      )
+                    }
+                    className="border p-2 rounded mb-2 w-full"
+                  >
+                    <option value={0}>เลือกสี</option>
+                    {colors.map((color) => (
+                      <option key={color.color_id} value={color.color_id}>
+                        {color.color_name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                {/* Size Selection */}
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700">
+                    ขนาด
+                  </label>
+                  <select
+                    value={detail.size_id}
+                    onChange={(e) =>
+                      handleProductDetailsChange(
+                        index,
+                        "size_id",
+                        parseInt(e.target.value)
+                      )
+                    }
+                    className="border p-2 rounded mb-2 w-full"
+                  >
+                    <option value={0}>เลือกขนาด</option>
+                    {sizes.map((size) => (
+                      <option key={size.size_id} value={size.size_id}>
+                        {size.size_name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                {/* Gender Selection */}
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700">
+                    เพศ
+                  </label>
+                  <select
+                    value={detail.gender_id}
+                    onChange={(e) =>
+                      handleProductDetailsChange(
+                        index,
+                        "gender_id",
+                        parseInt(e.target.value)
+                      )
+                    }
+                    className="border p-2 rounded mb-2 w-full"
+                  >
+                    <option value={0}>เลือกเพศ</option>
+                    {genders.map((gender) => (
+                      <option key={gender.gender_id} value={gender.gender_id}>
+                        {gender.gender_name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                {/* Stock Quantity */}
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700">
+                    จำนวนในสต็อก
+                  </label>
+                  <input
+                    type="number"
+                    placeholder="จำนวนในสต็อก"
+                    value={detail.stock_quantity}
+                    onChange={(e) =>
+                      handleProductDetailsChange(
+                        index,
+                        "stock_quantity",
+                        e.target.value
+                      )
+                    }
+                    className="border p-2 rounded mb-2 w-full"
+                  />
+                </div>
+                {/* Sale Price */}
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700">
+                    ราคา (ขาย)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="ราคา (ขาย)"
+                    value={detail.sale_price}
+                    onChange={(e) =>
+                      handleProductDetailsChange(
+                        index,
+                        "sale_price",
+                        e.target.value
+                      )
+                    }
+                    className="border p-2 rounded mb-2 w-full"
+                  />
+                </div>
+                {/* Cost Price */}
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700">
+                    ราคา (ต้นทุน)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="ราคา (ต้นทุน)"
+                    value={detail.cost_price}
+                    onChange={(e) =>
+                      handleProductDetailsChange(
+                        index,
+                        "cost_price",
+                        e.target.value
+                      )
+                    }
+                    className="border p-2 rounded mb-2 w-full"
+                  />
+                </div>
               </div>
             </div>
           ))}
         </div>
-        <div className="flex justify-between mt-6">
+        <div className="flex justify-end space-x-4 mt-4">
           <button
             onClick={addProductDetailForm}
-            className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600"
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
           >
-            เพิ่มรายละเอียดหลายรายการ
+            เพิ่มรายละเอียดสินค้า
           </button>
           <button
             onClick={handleSubmit}
-            className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+            className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
           >
-            ปุ่มยืนยันการเพิ่ม
+            ยืนยัน
           </button>
         </div>
       </div>

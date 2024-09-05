@@ -2,15 +2,14 @@
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 
-interface Types {
-  id: number;
+interface Type {
   type_id: number;
   type_name: string;
 }
 
 const TypeForm: React.FC = () => {
   const [typeName, setTypeName] = useState("");
-  const [types, setTypes] = useState<Types[]>([]);
+  const [types, setTypes] = useState<Type[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const fetchTypes = async () => {
@@ -39,7 +38,7 @@ const TypeForm: React.FC = () => {
       });
       setTypeName("");
       setIsModalOpen(false);
-      fetchTypes();
+      fetchTypes(); // Refresh the list after adding
     } catch (error) {
       console.error("Error adding type:", error);
     }
@@ -54,7 +53,7 @@ const TypeForm: React.FC = () => {
         },
         body: JSON.stringify({ type_id: typeId, type_name: newName }),
       });
-      fetchTypes();
+      fetchTypes(); // Refresh the list after editing
     } catch (error) {
       console.error("Error editing type:", error);
     }
@@ -69,7 +68,7 @@ const TypeForm: React.FC = () => {
         },
         body: JSON.stringify({ type_id: typeId }),
       });
-      fetchTypes();
+      fetchTypes(); // Refresh the list after deleting
     } catch (error) {
       console.error("Error deleting type:", error);
     }

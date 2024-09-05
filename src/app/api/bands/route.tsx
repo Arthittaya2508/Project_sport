@@ -22,8 +22,7 @@ export async function POST(request: Request) {
     const { band_name } = data;
 
     const [result] = await db.query(
-      `INSERT INTO bands (band_name) 
-       VALUES (?)`,
+      `INSERT INTO bands (band_name) VALUES (?)`,
       [band_name]
     );
 
@@ -40,11 +39,16 @@ export async function PUT(request: Request) {
     const data = await request.json();
     const { band_id, band_name } = data;
 
+    if (!band_id || !band_name) {
+      return NextResponse.json(
+        { error: "Missing band_id or band_name" },
+        { status: 400 }
+      );
+    }
+
     const [result] = await db.query(
-      `UPDATE bands 
-       SET band_name = ? 
-       WHERE id = ?`,
-      [band_name, band_id] // Ensure band_id is used
+      `UPDATE bands SET band_name = ? WHERE band_id = ?`,
+      [band_name, band_id]
     );
 
     return NextResponse.json({ success: true, result });
@@ -63,11 +67,13 @@ export async function DELETE(request: Request) {
     const data = await request.json();
     const { band_id } = data;
 
-    const [result] = await db.query(
-      `DELETE FROM bands 
-       WHERE id = ?`,
-      [band_id] // Ensure band_id is used
-    );
+    if (!band_id) {
+      return NextResponse.json({ error: "Missing band_id" }, { status: 400 });
+    }
+
+    const [result] = await db.query(`DELETE FROM bands WHERE band_id = ?`, [
+      band_id,
+    ]);
 
     return NextResponse.json({ success: true, result });
   } catch (error) {

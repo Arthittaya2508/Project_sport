@@ -4,12 +4,13 @@ import React from "react";
 
 const Dashboard: React.FC = () => {
   const orderStatuses = [
-    { label: "ออเดอร์ทั้งหมด", count: 100, bgColor: "bg-blue-400" },
     { label: "ออเดอร์ที่ยังไม่ได้รับ", count: 20, bgColor: "bg-yellow-400" },
     { label: "ออเดอร์ที่กำลังจัดเตรียม", count: 15, bgColor: "bg-orange-400" },
+    { label: "ออเดอร์ที่รอขนส่งมารับ", count: 10, bgColor: "bg-blue-400" },
     { label: "ออเดอร์ที่จัดส่งแล้ว", count: 25, bgColor: "bg-indigo-400" },
     { label: "ออเดอร์ที่ส่งเรียบร้อย", count: 18, bgColor: "bg-green-400" },
     { label: "ออเดอร์ที่ยกเลิก", count: 5, bgColor: "bg-red-400" },
+    { label: "ออเดอร์ทั้งหมด", count: 110, bgColor: "bg-blue-400" },
   ];
 
   const orders = [

@@ -1,6 +1,8 @@
-"use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { MdDeleteForever } from "react-icons/md";
+import { CiEdit } from "react-icons/ci";
+import EditProductModal from "../edit-modal/edit-modal";
 
 interface Color {
   color_id: number;
@@ -45,6 +47,8 @@ export default function Products() {
   const [productDetails, setProductDetails] = useState<ProductDetails[]>([]);
   const [types, setTypes] = useState<Type[]>([]);
   const [bands, setBands] = useState<Band[]>([]);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -62,13 +66,6 @@ export default function Products() {
         const typesData = await typesRes.json();
         const bandsData = await bandsRes.json();
 
-        // Log the fetched data for debugging
-        console.log("Products Data:", productsData);
-        console.log("Product Details Data:", productDetailsData);
-        console.log("Types Data:", typesData);
-        console.log("Bands Data:", bandsData);
-
-        // Check and set data, ensuring it's in the expected format
         setProducts(Array.isArray(productsData) ? productsData : []);
         setProductDetails(
           Array.isArray(productDetailsData) ? productDetailsData : []
@@ -90,6 +87,28 @@ export default function Products() {
 
   const getProductDetailForDisplay = (pro_id: number) =>
     productDetails.find((detail) => detail.pro_id === pro_id);
+
+  const handleEdit = (product: Product) => {
+    setSelectedProduct(product);
+    setIsEditModalOpen(true);
+  };
+
+  const handleDelete = async (pro_id: number) => {
+    if (confirm("Are you sure you want to delete this product?")) {
+      await fetch(`/api/products/${pro_id}`, {
+        method: "DELETE",
+      });
+      setProducts(products.filter((product) => product.pro_id !== pro_id));
+    }
+  };
+
+  const handleSaveProduct = (updatedProduct: Product) => {
+    setProducts(
+      products.map((product) =>
+        product.pro_id === updatedProduct.pro_id ? updatedProduct : product
+      )
+    );
+  };
 
   return (
     <div className="container mx-auto p-4">
@@ -132,10 +151,22 @@ export default function Products() {
                 <td className="py-2 px-4">{getTypeName(product.type_id)}</td>
                 <td className="py-2 px-4">{detail?.sale_price}</td>
                 <td className="py-2 px-4">{detail?.cost_price}</td>
-                <td className="py-2 px-4">
+                <td className="py-2 px-4 flex space-x-2 items-center">
+                  <button
+                    className="bg-green-500 text-white px-2 py-1 rounded flex items-center"
+                    onClick={() => handleEdit(product)}
+                  >
+                    <CiEdit className="h-7 w-7" aria-hidden="true" />
+                  </button>
+                  <button
+                    className="bg-red-500 text-white px-2 py-1 rounded flex items-center"
+                    onClick={() => handleDelete(product.pro_id)}
+                  >
+                    <MdDeleteForever className="h-7 w-7" aria-hidden="true" />
+                  </button>
                   <Link href={`/product-details/${product.pro_id}`} passHref>
-                    <button className="bg-green-500 text-white px-2 py-1 rounded">
-                      View Details
+                    <button className="bg-green-500 text-white px-1 py-1 rounded">
+                      <span className="ml-1">รายละเอียด</span>
                     </button>
                   </Link>
                 </td>
@@ -144,6 +175,14 @@ export default function Products() {
           })}
         </tbody>
       </table>
+      <EditProductModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        product={selectedProduct}
+        types={types}
+        bands={bands}
+        onSave={handleSaveProduct}
+      />
     </div>
   );
 }

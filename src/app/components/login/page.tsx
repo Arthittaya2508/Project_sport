@@ -1,19 +1,19 @@
 import { useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
-import SignUpModal from "../signup/page";
+import RegisterModal from "../register/page"; // นำเข้า RegisterModal
 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
-  const [isSignUpOpen, setSignUpOpen] = useState(false);
+const LoginModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
+  const [isRegisterOpen, setRegisterOpen] = useState(false);
 
   if (!isOpen) return null;
 
   const handleSignUpClick = () => {
-    setSignUpOpen(true);
+    setRegisterOpen(true);
   };
 
   return (
@@ -27,7 +27,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
             <AiOutlineClose size={24} />
           </button>
           <h2 className="text-xl font-semibold mb-4 text-black">ล็อกอิน</h2>
-          {/* Add your login form here */}
+          {/* เพิ่มฟอร์มล็อกอิน */}
           <form>
             <div className="mb-4">
               <label className="block text-gray-700">อีเมล</label>
@@ -60,9 +60,12 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
           </form>
         </div>
       </div>
-      <SignUpModal isOpen={isSignUpOpen} onClose={() => setSignUpOpen(false)} />
+      <RegisterModal
+        isOpen={isRegisterOpen}
+        onClose={() => setRegisterOpen(false)}
+      />
     </>
   );
 };
 
-export default Modal;
+export default LoginModal;
