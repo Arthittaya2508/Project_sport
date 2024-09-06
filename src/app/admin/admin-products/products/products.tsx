@@ -3,7 +3,16 @@ import Link from "next/link";
 import { MdDeleteForever } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 import EditProductModal from "../edit-modal/edit-modal";
+import Swal from "sweetalert2";
 
+interface EditProductModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  product: Product | null;
+  types: Type[];
+  bands: Band[];
+  onSave: (product: Product) => void;
+}
 interface Color {
   color_id: number;
   color_name: string;
@@ -27,6 +36,7 @@ interface Size {
 type Product = {
   pro_id: number;
   pro_name: string;
+  pro_des: string;
   type_id: number;
   band_id: number;
 };
@@ -94,11 +104,37 @@ export default function Products() {
   };
 
   const handleDelete = async (pro_id: number) => {
-    if (confirm("Are you sure you want to delete this product?")) {
-      await fetch(`/api/products/${pro_id}`, {
-        method: "DELETE",
-      });
-      setProducts(products.filter((product) => product.pro_id !== pro_id));
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "Do you really want to delete this product? This action cannot be undone.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "No, cancel",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await fetch(`/api/products/${pro_id}`, {
+          method: "DELETE",
+        });
+        setProducts((prevProducts) =>
+          prevProducts.filter((product) => product.pro_id !== pro_id)
+        );
+        Swal.fire({
+          icon: "success",
+          title: "Deleted",
+          text: "Product has been deleted.",
+        });
+      } catch (error) {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Failed to delete the product.",
+        });
+      }
     }
   };
 
@@ -120,61 +156,55 @@ export default function Products() {
           </button>
         </Link>
       </div>
-      <table className="min-w-full bg-white">
-        <thead>
-          <tr>
-            <th className="py-2">Product Code</th>
-            <th className="py-2">Image</th>
-            <th className="py-2">Name</th>
-            <th className="py-2">Brand</th>
-            <th className="py-2">Type</th>
-            <th className="py-2">Sale Price</th>
-            <th className="py-2">Cost Price</th>
-            <th className="py-2">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {products.map((product) => {
-            const detail = getProductDetailForDisplay(product.pro_id);
-            return (
-              <tr key={product.pro_id} className="border-t">
-                <td className="py-2 px-4">{detail?.sku || "N/A"}</td>
-                <td className="py-2 px-4">
-                  <img
-                    src={`/images/${detail?.pro_image || "default.jpg"}`}
-                    alt={product.pro_name}
-                    className="h-16 w-16 object-cover"
-                  />
-                </td>
-                <td className="py-2 px-4">{product.pro_name}</td>
-                <td className="py-2 px-4">{getBandName(product.band_id)}</td>
-                <td className="py-2 px-4">{getTypeName(product.type_id)}</td>
-                <td className="py-2 px-4">{detail?.sale_price}</td>
-                <td className="py-2 px-4">{detail?.cost_price}</td>
-                <td className="py-2 px-4 flex space-x-2 items-center">
-                  <button
-                    className="bg-green-500 text-white px-2 py-1 rounded flex items-center"
-                    onClick={() => handleEdit(product)}
-                  >
-                    <CiEdit className="h-7 w-7" aria-hidden="true" />
-                  </button>
-                  <button
-                    className="bg-red-500 text-white px-2 py-1 rounded flex items-center"
-                    onClick={() => handleDelete(product.pro_id)}
-                  >
-                    <MdDeleteForever className="h-7 w-7" aria-hidden="true" />
-                  </button>
-                  <Link href={`/product-details/${product.pro_id}`} passHref>
-                    <button className="bg-green-500 text-white px-1 py-1 rounded">
-                      <span className="ml-1">รายละเอียด</span>
+      <div className="overflow-y-auto h-[800px]">
+        {" "}
+        {/* Adjust height here */}
+        <table className="min-w-full bg-white">
+          <thead>
+            <tr>
+              <th className="py-2">รหัส</th>
+              <th className="py-2 ">ชื่อสินค้า</th>
+              <th className="py-2 ">คำอธิบายสินค้า</th>
+              <th className="py-2">แบนด์</th>
+              <th className="py-2">ประเภท</th>
+              <th className="py-2">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {products.map((product) => {
+              const detail = getProductDetailForDisplay(product.pro_id);
+              return (
+                <tr key={product.pro_id} className="border-t">
+                  <td className="py-2 px-4">{detail?.sku || "N/A"}</td>
+                  <td className="py-2 px-4">{product.pro_name}</td>
+                  <td className="py-2 px-4">{product.pro_des}</td>
+                  <td className="py-2 px-4">{getBandName(product.band_id)}</td>
+                  <td className="py-2 px-4">{getTypeName(product.type_id)}</td>
+                  <td className="py-2 px-4 flex space-x-2 items-center">
+                    <button
+                      className="bg-green-500 text-white px-2 py-1 rounded flex items-center"
+                      onClick={() => handleEdit(product)}
+                    >
+                      <CiEdit className="h-7 w-7" aria-hidden="true" />
                     </button>
-                  </Link>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+                    <button
+                      className="bg-red-500 text-white px-2 py-1 rounded flex items-center"
+                      onClick={() => handleDelete(product.pro_id)}
+                    >
+                      <MdDeleteForever className="h-7 w-7" aria-hidden="true" />
+                    </button>
+                    <Link href={`/product-details/${product.pro_id}`} passHref>
+                      <button className="bg-green-500 text-white px-1 py-1 rounded">
+                        <span className="ml-1">รายละเอียด</span>
+                      </button>
+                    </Link>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
       <EditProductModal
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
