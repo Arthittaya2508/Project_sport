@@ -1,3 +1,4 @@
+import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -6,21 +7,13 @@ interface Color {
   color_id: number;
   color_name: string;
 }
-interface Type {
-  type_id: number;
-  type_name: string;
-}
-interface Band {
-  band_id: number;
-  band_name: string;
+interface Size {
+  size_id: number;
+  size_name: string;
 }
 interface Gender {
   gender_id: number;
   gender_name: string;
-}
-interface Size {
-  size_id: number;
-  size_name: string;
 }
 type ProductDetails = {
   pro_id: number;
@@ -32,39 +25,64 @@ type ProductDetails = {
   pro_image: string;
 };
 
-export default function ProductDetailsPage() {
+const ProductDetailsPage = ({
+  initialProductDetails,
+}: {
+  initialProductDetails: ProductDetails[];
+}) => {
   const router = useRouter();
-  const { id } = router.query;
-  const [productDetails, setProductDetails] = useState<ProductDetails[]>([]);
+  const { pro_id } = router.query;
+  const [productDetails, setProductDetails] = useState<ProductDetails[]>(
+    initialProductDetails
+  );
   const [colors, setColors] = useState<Color[]>([]);
   const [sizes, setSizes] = useState<Size[]>([]);
   const [genders, setGenders] = useState<Gender[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (id) {
+    if (pro_id) {
       const fetchData = async () => {
-        const [productDetailsRes, colorsRes, sizesRes, gendersRes] =
-          await Promise.all([
-            fetch(`/api/product_details/${id}`),
-            fetch("/api/colors"),
-            fetch("/api/sizes"),
-            fetch("/api/genders"),
-          ]);
+        setLoading(true);
+        try {
+          const [productDetailsRes, colorsRes, sizesRes, gendersRes] =
+            await Promise.all([
+              fetch(`/api/product_details/${pro_id}`),
+              fetch("/api/colors"),
+              fetch("/api/sizes"),
+              fetch("/api/genders"),
+            ]);
 
-        const productDetailsData = await productDetailsRes.json();
-        const colorsData = await colorsRes.json();
-        const sizesData = await sizesRes.json();
-        const gendersData = await gendersRes.json();
+          if (
+            !productDetailsRes.ok ||
+            !colorsRes.ok ||
+            !sizesRes.ok ||
+            !gendersRes.ok
+          ) {
+            throw new Error("Failed to fetch data.");
+          }
 
-        setProductDetails(productDetailsData);
-        setColors(colorsData);
-        setSizes(sizesData);
-        setGenders(gendersData);
+          const productDetailsData = await productDetailsRes.json();
+          const colorsData = await colorsRes.json();
+          const sizesData = await sizesRes.json();
+          const gendersData = await gendersRes.json();
+
+          setProductDetails(productDetailsData);
+          setColors(colorsData);
+          setSizes(sizesData);
+          setGenders(gendersData);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+          setError("Failed to load product details.");
+        } finally {
+          setLoading(false);
+        }
       };
 
       fetchData();
     }
-  }, [id]);
+  }, [pro_id]);
 
   const getColorName = (color_id: number) =>
     colors.find((color) => color.color_id === color_id)?.color_name ||
@@ -78,14 +96,20 @@ export default function ProductDetailsPage() {
     "Unknown";
 
   const handleEdit = (sku: string) => {
-    // Implement edit functionality here
     console.log(`Edit product with SKU: ${sku}`);
   };
 
   const handleDelete = (sku: string) => {
-    // Implement delete functionality here
     console.log(`Delete product with SKU: ${sku}`);
   };
+
+  if (loading) {
+    return <p>Loading product details...</p>;
+  }
+
+  if (error) {
+    return <p>{error}</p>;
+  }
 
   return (
     <div className="container mx-auto p-4">
@@ -142,4 +166,35 @@ export default function ProductDetailsPage() {
       </div>
     </div>
   );
-}
+};
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { pro_id } = context.query;
+
+  if (typeof pro_id !== "string") {
+    return {
+      notFound: true,
+    };
+  }
+
+  try {
+    const res = await fetch(`http://localhost:3000/api/products/${pro_id}`);
+    if (!res.ok) {
+      throw new Error("Failed to fetch product details.");
+    }
+
+    const initialProductDetails = await res.json();
+    return {
+      props: {
+        initialProductDetails,
+      },
+    };
+  } catch (error) {
+    console.error("Failed to fetch product details:", error);
+    return {
+      notFound: true,
+    };
+  }
+};
+
+export default ProductDetailsPage;

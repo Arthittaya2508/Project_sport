@@ -23,7 +23,7 @@ export default async function handler(
       for (const address of addresses) {
         const { district, amphoe, province, zipcode } = address;
 
-        // Assuming `customer_id` and `address_name` are provided in the request body or default values
+        // Assuming `address_name` and `user_id` are provided in the request body or default values
         const address_name = req.body.address_name || "Default Address Name";
         const user_id = req.body.user_id || 1; // Example customer ID
 
@@ -38,6 +38,19 @@ export default async function handler(
     } catch (error) {
       console.error("Error reading or inserting data:", error);
       res.status(500).json({ message: "Failed to add addresses." });
+    }
+  } else if (req.method === "GET") {
+    try {
+      // Retrieve addresses from the database
+      const [rows] = await db.query("SELECT * FROM addresses");
+
+      // Log the retrieved rows for debugging
+      console.log("Retrieved addresses:", rows);
+
+      res.status(200).json(rows);
+    } catch (error) {
+      console.error("Error retrieving addresses:", error);
+      res.status(500).json({ message: "Failed to retrieve addresses." });
     }
   } else {
     res.status(405).json({ message: "Method not allowed" });

@@ -1,8 +1,19 @@
-// import { query } from "./db"; // ปรับ path ให้ตรงกับที่เก็บ query function
-// import { Product } from "../products/types/types"; // ปรับ path ให้ตรงกับที่เก็บ type ของคุณ
+// lib/product.ts
 
-// export async function getProductById(id: number): Promise<Product | null> {
-//   const sql = "SELECT * FROM products WHERE pro_id = ?"; // แก้ไขชื่อคอลัมน์ให้ตรงกับฐานข้อมูล
-//   const results = await query<Product>(sql, [id]);
-//   return results.length > 0 ? results[0] : null;
-// }
+import { query } from "./db"; // ปรับ path ให้ตรงกับที่เก็บ db.ts
+import { Product } from "../products/types/types";
+
+export async function getProductById(id: string): Promise<Product | null> {
+  try {
+    const result = await query("SELECT * FROM products WHERE id = ?", [id]);
+
+    if (result.length > 0) {
+      return result[0] as Product;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching product by ID:", error);
+    throw error;
+  }
+}

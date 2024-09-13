@@ -5,12 +5,12 @@ import React from "react";
 const Dashboard: React.FC = () => {
   const orderStatuses = [
     { label: "ออเดอร์ที่ยังไม่ได้รับ", count: 20, bgColor: "bg-yellow-400" },
-    { label: "ออเดอร์ที่กำลังจัดเตรียม", count: 15, bgColor: "bg-orange-400" },
-    { label: "ออเดอร์ที่รอขนส่งมารับ", count: 10, bgColor: "bg-blue-400" },
+    { label: "ที่กำลังจัดเตรียม", count: 15, bgColor: "bg-orange-400" },
+    { label: "รอขนส่งมารับ", count: 10, bgColor: "bg-blue-400" },
     { label: "ออเดอร์ที่จัดส่งแล้ว", count: 25, bgColor: "bg-indigo-400" },
     { label: "ออเดอร์ที่ส่งเรียบร้อย", count: 18, bgColor: "bg-green-400" },
     { label: "ออเดอร์ที่ยกเลิก", count: 5, bgColor: "bg-red-400" },
-    { label: "ออเดอร์ทั้งหมด", count: 110, bgColor: "bg-blue-400" },
+    // { label: "ออเดอร์ทั้งหมด", count: 110, bgColor: "bg-blue-400" },
   ];
 
   const orders = [
@@ -41,10 +41,10 @@ const Dashboard: React.FC = () => {
         {orderStatuses.map((status) => (
           <div
             key={status.label}
-            className={`${status.bgColor} text-black p-4 rounded-md shadow-md w-52 text-center `}
+            className={`${status.bgColor} text-black p-4 rounded-md shadow-md w-40 h-20 text-center `}
           >
-            <h2 className="text-base font-semibold">{status.label}</h2>
-            <p className="text-xl font-bold">({status.count})</p>
+            <h2 className="text-sm font-semibold">{status.label}</h2>
+            <p className="text-sm font-bold">({status.count})</p>
           </div>
         ))}
       </div>

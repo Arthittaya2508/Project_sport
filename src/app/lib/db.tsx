@@ -1,5 +1,6 @@
+// lib/db.ts
+
 import mysql from "mysql2/promise";
-import { Product } from "../products/types/types"; // ปรับ path ให้ตรงกับที่เก็บ type ของคุณ
 
 const connection = mysql.createPool({
   host: process.env.DATABASE_HOST,
@@ -8,17 +9,9 @@ const connection = mysql.createPool({
   database: process.env.DATABASE_NAME,
 });
 
-export async function getProductById(id: string): Promise<Product | null> {
-  const conn = await connection.getConnection();
-  try {
-    const [rows] = await conn.query("SELECT * FROM products WHERE id = ?", [
-      id,
-    ]);
-    const product = rows as Product[]; // ใช้ type assertion ที่นี่
-    return product.length > 0 ? product[0] : null;
-  } finally {
-    conn.release();
-  }
+export async function query<T>(sql: string, values?: any[]): Promise<T[]> {
+  const [rows] = await connection.execute(sql, values);
+  return rows as T[];
 }
 
 export default connection;
