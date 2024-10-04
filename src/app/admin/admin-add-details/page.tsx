@@ -1,7 +1,7 @@
 "use client";
 import React, { Suspense } from "react";
-import Sidebar from "./sidebar/sidebar";
-import Navbar from "./nav/nav";
+import Sidebar from "../components/sidebar/sidebar";
+import Navbar from "../components/nav/nav";
 import ProductDetails from "./pro-details/pro-details";
 
 export default function AdminLayoutPage() {

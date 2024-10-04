@@ -38,6 +38,7 @@
     "swiper": "^11.1.10"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
     "@types/express": "^4.17.21",
     "@types/formidable": "^3.4.5",
     "@types/node": "^20",

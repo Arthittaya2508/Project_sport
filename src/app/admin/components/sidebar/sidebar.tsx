@@ -86,7 +86,7 @@ const Sidebar = () => {
                   )}
                 </div>
                 {isCustomerOpen && isOpen && (
-                  <ul className="pl-8 mt-2 space-y-2">
+                  <ul className="pl-8 mt-4 space-y-2">
                     <li className="flex items-center">
                       <Link href="/admin/admin-products">
                         <div className="flex items-center cursor-pointer">
@@ -143,6 +143,23 @@ const Sidebar = () => {
                   isOpen ? "" : "justify-center"
                 }`}
               >
+                <Link href="/admin/admin-transport">
+                  <div className="flex items-center cursor-pointer">
+                    <FaTachometerAlt />
+                    {isOpen && (
+                      <span className="ml-2 transition-opacity duration-300">
+                        ข้อมูลขนส่ง
+                      </span>
+                    )}
+                  </div>
+                </Link>
+              </li>
+
+              <li
+                className={`flex items-center ${
+                  isOpen ? "" : "justify-center"
+                }`}
+              >
                 <Link href="/admin/admin-customer">
                   <div className="flex items-center cursor-pointer">
                     <FaTachometerAlt />
@@ -159,7 +176,7 @@ const Sidebar = () => {
                   isOpen ? "" : "justify-center"
                 }`}
               >
-                <Link href="/admin/admin-employee">
+                <Link href="/employee-info">
                   <div className="flex items-center cursor-pointer">
                     <FaTachometerAlt />
                     {isOpen && (
@@ -209,6 +226,22 @@ const Sidebar = () => {
                     </li>
                   </ul>
                 )}
+              </li>
+              <li
+                className={`flex items-center  ${
+                  isOpen ? "" : "justify-center"
+                }`}
+              >
+                <Link href="/admin/admin-transport">
+                  <div className="flex items-center cursor-pointer">
+                    <FaTachometerAlt />
+                    {isOpen && (
+                      <span className="ml-2 transition-opacity duration-300">
+                        ออกจากระบบ
+                      </span>
+                    )}
+                  </div>
+                </Link>
               </li>
             </ul>
           </nav>

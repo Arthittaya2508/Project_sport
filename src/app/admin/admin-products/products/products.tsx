@@ -211,7 +211,7 @@ export default function Products() {
         product={selectedProduct}
         types={types}
         bands={bands}
-        onSave={handleSaveProduct}
+        onSave={(updatedProduct: Product) => handleSaveProduct(updatedProduct)}
       />
     </div>
   );

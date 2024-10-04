@@ -1,35 +1,51 @@
-// pages/api/admin-login.ts
-import { NextApiRequest, NextApiResponse } from "next";
-import { query } from "../../lib/db"; // Update the path according to your project structure
+import { NextRequest, NextResponse } from "next/server";
+import db from "../../lib/db";
+import bcrypt from "bcryptjs";
+import { RowDataPacket } from "mysql2"; // นำเข้า RowDataPacket เพื่อใช้ในการทำ type assertion
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.method === "POST") {
-    const { username, password } = req.body;
+export async function POST(req: NextRequest) {
+  try {
+    const { username, password } = await req.json();
 
-    try {
-      const rows = await query<any>(
-        "SELECT * FROM employees WHERE username = ? AND password = ?",
-        [username, password]
+    if (!username || !password) {
+      return NextResponse.json(
+        { message: "Username and password are required." },
+        { status: 400 }
       );
-
-      if (rows.length > 0) {
-        res.status(200).json({ success: true });
-      } else {
-        res
-          .status(401)
-          .json({ success: false, message: "Invalid credentials" });
-      }
-    } catch (error) {
-      console.error("Database query failed:", error);
-      res
-        .status(500)
-        .json({ success: false, message: "Internal server error" });
     }
-  } else {
-    res.setHeader("Allow", ["POST"]);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
+
+    // ดึงข้อมูลผู้ใช้จากตาราง employees โดยใช้ username
+    const [rows] = await db.execute<RowDataPacket[]>(
+      "SELECT * FROM employees WHERE username = ?",
+      [username]
+    );
+
+    // ตรวจสอบว่าพบผู้ใช้และรหัสผ่านตรงกันหรือไม่
+    if (rows.length > 0) {
+      const user = rows[0]; // ใช้ type assertion ในการเข้าถึงข้อมูลแถวแรก
+
+      // เปรียบเทียบรหัสผ่านกับรหัสผ่านที่เข้ารหัสในฐานข้อมูล
+      const isPasswordMatch = await bcrypt.compare(password, user.password);
+
+      if (isPasswordMatch) {
+        return NextResponse.json({ success: true }, { status: 200 });
+      } else {
+        return NextResponse.json(
+          { success: false, message: "Invalid username or password." },
+          { status: 401 }
+        );
+      }
+    } else {
+      return NextResponse.json(
+        { success: false, message: "Invalid username or password." },
+        { status: 401 }
+      );
+    }
+  } catch (error) {
+    console.error("Database connection error:", error);
+    return NextResponse.json(
+      { message: "Something went wrong." },
+      { status: 500 }
+    );
   }
 }

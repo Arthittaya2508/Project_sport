@@ -3,14 +3,13 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import SignUpModal from "../register/page";
+import Swal from "sweetalert2"; // นำเข้า sweetalert2
 
 const AdminLogin: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -28,13 +27,31 @@ const AdminLogin: React.FC = () => {
       const result = await response.json();
 
       if (response.ok && result.success) {
-        router.push("/admin/admin-dash");
+        // แสดง SweetAlert สำหรับล้อกอินสำเร็จ
+        Swal.fire({
+          icon: "success",
+          title: "Login Successful",
+          text: "You will be redirected to the dashboard.",
+        }).then(() => {
+          router.push("/admin/admin-dash"); // เมื่อกด OK แล้วจะทำการเปลี่ยนเส้นทาง
+        });
       } else {
         setError(result.message || "Login failed");
+
+        // แสดง SweetAlert สำหรับล้อกอินล้มเหลว
+        Swal.fire({
+          icon: "error",
+          title: "Login Failed",
+          text: result.message || "Invalid username or password.",
+        });
       }
     } catch (error) {
-      console.error("An error occurred:", error);
-      setError("An error occurred while logging in.");
+      // แสดง SweetAlert สำหรับ error อื่น ๆ
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "An error occurred while logging in. Please try again.",
+      });
     }
   };
 
@@ -95,18 +112,7 @@ const AdminLogin: React.FC = () => {
             Login
           </button>
         </form>
-        <p className="mt-4 text-sm text-gray-600">
-          Don't have an account?{" "}
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="text-indigo-600 hover:text-indigo-800"
-          >
-            Sign Up
-          </button>
-        </p>
       </div>
-
-      {isModalOpen && <SignUpModal onClose={() => setIsModalOpen(false)} />}
     </div>
   );
 };

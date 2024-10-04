@@ -1,7 +1,7 @@
 "use client";
 import React, { Suspense, ReactNode } from "react";
-import Sidebar from "./sidebar/sidebar";
-import Navbar from "./nav/nav";
+import Sidebar from "../components/sidebar/sidebar";
+import Navbar from "../components/nav/nav";
 import BandForm from "./bands/band";
 
 export default function AdminLayoutPage() {
