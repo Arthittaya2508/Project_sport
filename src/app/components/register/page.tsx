@@ -166,56 +166,56 @@ const RegisterModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
         >
           <AiOutlineClose size={24} />
         </button>
-        <h2 className="text-3xl font-semibold text-center text-gray-800 mb-6">
+        <h2 className="text-3xl font-semibold text-center text-cyprus-950 mb-6">
           Register
         </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
-              <label className="block text-gray-900">ชื่อ</label>
+              <label className="block text-cyprus-950">ชื่อ</label>
               <input
                 type="text"
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
                 placeholder="Name"
-                className="w-full p-3 border text-gray-900 border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-3 border text-cyprus-950 border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
             </div>
             <div>
-              <label className="block text-gray-900">นามสกุล</label>
+              <label className="block text-cyprus-950">นามสกุล</label>
               <input
                 type="text"
                 name="lastname"
                 value={formData.lastname}
                 onChange={handleChange}
                 placeholder="Lastname"
-                className="w-full p-3 border text-gray-900 border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-3 border text-cyprus-950 border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
             </div>
           </div>
           <div>
-            <label className="block text-gray-900">ที่อยู่</label>
+            <label className="block text-cyprus-950">ที่อยู่</label>
             <input
               type="text"
               name="address"
               value={formData.address}
               onChange={handleChange}
               placeholder="address"
-              className="w-full p-3 border text-gray-900 border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-3 border text-cyprus-950 border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
           </div>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
-              <label className="block text-gray-900">จังหวัด</label>
+              <label className="block text-cyprus-950">จังหวัด</label>
               <select
                 name="province"
                 value={formData.province}
                 onChange={handleChange}
-                className="w-full p-3 border text-gray-900 border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-3 border text-cyprus-950 border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               >
                 <option value="">เลือกจังหวัด</option>
@@ -227,12 +227,12 @@ const RegisterModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
               </select>
             </div>
             <div>
-              <label className="block text-gray-900">อำเภอ</label>
+              <label className="block text-cyprus-950">อำเภอ</label>
               <select
                 name="amphoe"
                 value={formData.amphoe}
                 onChange={handleChange}
-                className="w-full p-3 border text-gray-900 border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-3 border text-cyprus-950 border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
                 disabled={!formData.province}
               >
@@ -247,12 +247,12 @@ const RegisterModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
           </div>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
-              <label className="block text-gray-900">ตำบล</label>
+              <label className="block text-cyprus-950">ตำบล</label>
               <select
                 name="district"
                 value={formData.district}
                 onChange={handleChange}
-                className="w-full p-3 border text-gray-900 border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-3 border text-cyprus-950 border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
                 disabled={!formData.amphoe}
               >
@@ -265,57 +265,57 @@ const RegisterModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
               </select>
             </div>
             <div>
-              <label className="block text-gray-900">รหัสไปรษณีย์</label>
+              <label className="block text-cyprus-950">รหัสไปรษณีย์</label>
               <input
                 type="text"
                 name="postalCode"
                 value={formData.postalCode}
                 readOnly
-                className="w-full p-3 border text-gray-900 border-gray-300 rounded-lg shadow-sm focus:outline-none"
+                className="w-full p-3 border text-cyprus-950 border-gray-300 rounded-lg shadow-sm focus:outline-none"
               />
             </div>
           </div>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
-              <label className="block text-gray-900">เบอร์โทร</label>
+              <label className="block text-cyprus-950">เบอร์โทร</label>
               <input
                 type="text"
                 name="telephone"
                 value={formData.telephone}
                 onChange={handleChange}
                 placeholder="Telephone"
-                className="w-full p-3 border text-gray-900 border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-3 border text-cyprus-950 border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
             </div>
             <div>
-              <label className="block text-gray-900">อีเมล</label>
+              <label className="block text-cyprus-950">อีเมล</label>
               <input
                 type="email"
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="Email"
-                className="w-full p-3 border text-gray-900 border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-3 border text-cyprus-950 border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
             </div>
           </div>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
-              <label className="block text-gray-900">ชื่อผู้ใช้</label>
+              <label className="block text-cyprus-950">ชื่อผู้ใช้</label>
               <input
                 type="text"
                 name="username"
                 value={formData.username}
                 onChange={handleChange}
                 placeholder="Username"
-                className="w-full p-3 border text-gray-900 border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-3 border text-cyprus-950 border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
             </div>
             <div>
-              <label className="block text-gray-900">รหัสผ่าน</label>
+              <label className="block text-cyprus-950">รหัสผ่าน</label>
               <div className="relative">
                 <input
                   type={isPasswordVisible ? "text" : "password"}
@@ -323,7 +323,7 @@ const RegisterModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                   value={formData.password}
                   onChange={handleChange}
                   placeholder="Password"
-                  className="w-full p-3 border text-gray-900 border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full p-3 border text-cyprus-950 border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
                 <button
@@ -341,7 +341,7 @@ const RegisterModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
             </div>
           </div>
           <div>
-            <label className="block text-gray-900">รูปภาพ</label>
+            <label className="block text-cyprus-950">รูปภาพ</label>
             <input
               type="text"
               name="image"
@@ -354,7 +354,7 @@ const RegisterModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
           <div className="flex justify-end mt-4">
             <button
               type="submit"
-              className="bg-blue-500 text-white px-6 py-2 rounded-lg shadow-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="bg-cyprus-950 text-white px-6 py-2 rounded-lg shadow-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               Register
             </button>

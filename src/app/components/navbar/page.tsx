@@ -120,7 +120,7 @@ const Navbar = () => {
           {/* Login Button */}
           <button
             onClick={() => setIsModalOpen(true)}
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            className="bg-cyprus-700 text-white px-4 py-2 rounded hover:bg-cyprus-500"
           >
             ล็อกอิน
           </button>
