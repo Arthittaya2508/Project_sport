@@ -5,26 +5,20 @@ import {
   AiOutlineSearch,
   AiOutlineHeart,
   AiOutlineShoppingCart,
-  AiOutlineDown,
-  AiOutlineUp,
 } from "react-icons/ai";
 import Modal from "../login/page";
+import {
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+  Button,
+} from "@nextui-org/react";
 
 const Navbar = () => {
-  const [isProductOpen, setIsProductOpen] = useState(false);
-  const [isAccessoriesOpen, setIsAccessoriesOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // Handle opening a dropdown and closing the other one
-  const toggleDropdown = (dropdown: string) => {
-    if (dropdown === "product") {
-      setIsProductOpen(!isProductOpen);
-      if (isAccessoriesOpen) setIsAccessoriesOpen(false);
-    } else if (dropdown === "accessories") {
-      setIsAccessoriesOpen(!isAccessoriesOpen);
-      if (isProductOpen) setIsProductOpen(false);
-    }
-  };
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   return (
     <nav className="bg-cyprus-950 shadow-md w-full text-white">
@@ -41,58 +35,49 @@ const Navbar = () => {
               </Link>
             </li>
             {/* Dropdown for Product Categories */}
-            <li className="relative">
-              <button
-                onClick={() => toggleDropdown("product")}
-                className="flex items-center space-x-1 hover:text-blue-500"
-              >
-                <span>ประเภทสินค้า</span>
-                {isProductOpen ? (
-                  <AiOutlineUp size={16} />
-                ) : (
-                  <AiOutlineDown size={16} />
-                )}
-              </button>
-              {isProductOpen && (
-                <ul className="absolute left-0 mt-2 w-40 bg-white shadow-lg border rounded-lg">
-                  <li className="hover:bg-gray-100 px-4 py-2">
+            <li>
+              <Dropdown>
+                <DropdownTrigger>
+                  <Button variant="bordered" className="text-white">
+                    ประเภทสินค้า
+                  </Button>
+                </DropdownTrigger>
+                <DropdownMenu
+                  aria-label="Product Categories"
+                  className="bg-white"
+                >
+                  <DropdownItem key="clothing">
                     <Link href="#">เสื้อผ้า</Link>
-                  </li>
-                  <li className="hover:bg-gray-100 px-4 py-2">
+                  </DropdownItem>
+                  <DropdownItem key="shoes">
                     <Link href="#">รองเท้า</Link>
-                  </li>
-                  <li className="hover:bg-gray-100 px-4 py-2">
+                  </DropdownItem>
+                  <DropdownItem key="bags">
                     <Link href="#">กระเป๋า</Link>
-                  </li>
-                </ul>
-              )}
+                  </DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
             </li>
             {/* Dropdown for Other Accessories */}
-            <li className="relative">
-              <button
-                onClick={() => toggleDropdown("accessories")}
-                className="flex items-center space-x-1 hover:text-blue-500"
-              >
-                <span>อุปกรณ์อื่นๆ</span>
-                {isAccessoriesOpen ? (
-                  <AiOutlineUp size={16} />
-                ) : (
-                  <AiOutlineDown size={16} />
-                )}
-              </button>
-              {isAccessoriesOpen && (
-                <ul className="absolute left-0 mt-2 w-40 bg-white shadow-lg border rounded-lg">
-                  <li className="hover:bg-gray-100 px-4 py-2">
+            <li>
+              <Dropdown>
+                <DropdownTrigger>
+                  <Button variant="bordered" className="text-white">
+                    อุปกรณ์อื่นๆ
+                  </Button>
+                </DropdownTrigger>
+                <DropdownMenu aria-label="Accessories" className="bg-white">
+                  <DropdownItem key="watches">
                     <Link href="#">นาฬิกา</Link>
-                  </li>
-                  <li className="hover:bg-gray-100 px-4 py-2">
+                  </DropdownItem>
+                  <DropdownItem key="glasses">
                     <Link href="#">แว่นตา</Link>
-                  </li>
-                  <li className="hover:bg-gray-100 px-4 py-2">
+                  </DropdownItem>
+                  <DropdownItem key="jewelry">
                     <Link href="#">เครื่องประดับ</Link>
-                  </li>
-                </ul>
-              )}
+                  </DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
             </li>
             {/* Screen Printing Service */}
             <li>
@@ -106,9 +91,22 @@ const Navbar = () => {
         {/* Right side */}
         <div className="flex items-center space-x-6">
           {/* Search */}
-          <button className="hover:text-blue-500">
+          <button
+            className="hover:text-blue-500"
+            onClick={() => setIsSearchOpen(!isSearchOpen)}
+          >
             <AiOutlineSearch size={24} />
           </button>
+          {/* Search Input */}
+          {isSearchOpen && (
+            <input
+              type="text"
+              className="bg-white text-black px-3 py-1 rounded outline-none"
+              placeholder="ค้นหา..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          )}
           {/* Wishlist */}
           <button className="hover:text-blue-500">
             <AiOutlineHeart size={24} />

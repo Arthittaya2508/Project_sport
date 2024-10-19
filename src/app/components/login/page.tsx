@@ -1,6 +1,10 @@
 import { useState } from "react";
-import { AiOutlineClose } from "react-icons/ai";
-import RegisterModal from "../register/page"; // นำเข้า RegisterModal
+import {
+  AiOutlineClose,
+  AiOutlineEye,
+  AiOutlineEyeInvisible,
+} from "react-icons/ai";
+import RegisterModal from "../register/page"; // Import RegisterModal
 
 interface ModalProps {
   isOpen: boolean;
@@ -9,11 +13,16 @@ interface ModalProps {
 
 const LoginModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
   const [isRegisterOpen, setRegisterOpen] = useState(false);
+  const [isPasswordVisible, setPasswordVisible] = useState(false); // State for password visibility
 
   if (!isOpen) return null;
 
   const handleSignUpClick = () => {
     setRegisterOpen(true);
+  };
+
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!isPasswordVisible); // Toggle password visibility
   };
 
   return (
@@ -26,27 +35,46 @@ const LoginModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
           >
             <AiOutlineClose size={24} />
           </button>
-          <h2 className="text-xl font-semibold mb-4 text-black">ล็อกอิน</h2>
-          {/* เพิ่มฟอร์มล็อกอิน */}
+          <h2 className="text-2xl font-semibold mb-4 text-cyprus-950 text-center">
+            ล็อกอิน
+          </h2>
+          {/* Login Form */}
           <form>
             <div className="mb-4">
-              <label className="block text-gray-700">อีเมล</label>
+              <label className="block text-cyprus-950 font-semibold">
+                อีเมล
+              </label>
               <input
                 type="email"
-                className="w-full px-3 py-2 border border-gray-300 rounded"
+                className="w-full px-3 py-2 border text-gray-500 rounded"
                 placeholder="กรุณาใส่อีเมล"
               />
             </div>
-            <div className="mb-4">
-              <label className="block text-gray-700">รหัสผ่าน</label>
+            <div className="mb-4 relative">
+              {" "}
+              {/* Add relative positioning */}
+              <label className="block text-cyprus-950 font-semibold">
+                รหัสผ่าน
+              </label>
               <input
-                type="password"
-                className="w-full px-3 py-2 border border-gray-300 rounded"
+                type={isPasswordVisible ? "text" : "password"} // Change input type based on visibility
+                className="w-full px-3 py-2 border text-gray-600 rounded"
                 placeholder="กรุณาใส่รหัสผ่าน"
               />
+              <button
+                type="button" // Make it a button to prevent form submission
+                onClick={togglePasswordVisibility}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-600"
+              >
+                {isPasswordVisible ? (
+                  <AiOutlineEye size={24} className="mt-5" />
+                ) : (
+                  <AiOutlineEyeInvisible size={24} className="mt-5" />
+                )}
+              </button>
             </div>
             <p
-              className="mb-4 text-black cursor-pointer"
+              className="mb-4 text-cyprus-950 cursor-pointer font-semibold"
               onClick={handleSignUpClick}
             >
               สมัครสมาชิก

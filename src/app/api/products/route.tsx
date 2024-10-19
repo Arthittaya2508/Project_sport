@@ -61,8 +61,8 @@ export async function PUT(request: Request) {
     const { id, pro_name, type_id, band_id } = data;
 
     await db.query(
-      `UPDATE products 
-       SET pro_name = ?, type_id = ?, band_id = ? 
+      `UPDATE products
+       SET pro_name = ?, type_id = ?, band_id = ?
        WHERE pro_id = ?`,
       [pro_name, type_id, band_id, id]
     );

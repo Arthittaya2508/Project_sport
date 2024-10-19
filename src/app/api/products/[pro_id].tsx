@@ -6,7 +6,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { pro_id } = req.query; // ตรวจสอบว่าใช้ 'pro_id' ใน query ตามที่ตั้งใจ
+  const { pro_id } = req.query;
 
   if (req.method === "GET") {
     if (typeof pro_id !== "string") {
@@ -14,15 +14,15 @@ export default async function handler(
     }
 
     try {
-      const result = await query("SELECT * FROM products WHERE id = ?", [
+      // เปลี่ยนจาก 'id' เป็น 'pro_id'
+      const result = await query("SELECT * FROM products WHERE pro_id = ?", [
         pro_id,
       ]);
 
-      // ตรวจสอบว่า result มีข้อมูลหรือไม่
       if (result.length > 0) {
         res.status(200).json(result[0]);
       } else {
-        res.status(404).json({ message: "Product not found" });
+        res.status(404).json({ message: "หาบ่เจอจ้าวว" });
       }
     } catch (error) {
       console.error("Failed to fetch product:", error);

@@ -13,6 +13,7 @@ interface EditProductModalProps {
   bands: Band[];
   onSave: (product: Product) => void;
 }
+
 interface Color {
   color_id: number;
   color_name: string;
@@ -33,6 +34,7 @@ interface Size {
   size_id: number;
   size_name: string;
 }
+
 type Product = {
   pro_id: number;
   pro_name: string;
@@ -40,6 +42,7 @@ type Product = {
   type_id: number;
   band_id: number;
 };
+
 type ProductDetails = {
   pro_id: number;
   color_id: number;
@@ -92,6 +95,7 @@ export default function Products() {
 
   const getTypeName = (type_id: number) =>
     types.find((type) => type.type_id === type_id)?.type_name || "Unknown";
+
   const getBandName = (band_id: number) =>
     bands.find((band) => band.band_id === band_id)?.band_name || "Unknown";
 
@@ -139,8 +143,8 @@ export default function Products() {
   };
 
   const handleSaveProduct = (updatedProduct: Product) => {
-    setProducts(
-      products.map((product) =>
+    setProducts((prevProducts) =>
+      prevProducts.map((product) =>
         product.pro_id === updatedProduct.pro_id ? updatedProduct : product
       )
     );
@@ -157,8 +161,6 @@ export default function Products() {
         </Link>
       </div>
       <div className="overflow-y-auto h-[800px]">
-        {" "}
-        {/* Adjust height here */}
         <table className="min-w-full bg-white">
           <thead>
             <tr>
@@ -175,7 +177,7 @@ export default function Products() {
               const detail = getProductDetailForDisplay(product.pro_id);
               return (
                 <tr key={product.pro_id} className="border-t">
-                  <td className="py-2 px-4">{detail?.sku || "N/A"}</td>
+                  <td className="py-2 px-4">{product.pro_id}</td>
                   <td className="py-2 px-4">{product.pro_name}</td>
                   <td className="py-2 px-4">{product.pro_des}</td>
                   <td className="py-2 px-4">{getBandName(product.band_id)}</td>
@@ -193,7 +195,10 @@ export default function Products() {
                     >
                       <MdDeleteForever className="h-7 w-7" aria-hidden="true" />
                     </button>
-                    <Link href={`/product-details/${product.pro_id}`} passHref>
+                    <Link
+                      href={`/admin-product-details/product-details/${product.pro_id}`} // Use the pro_id in the URL
+                      passHref
+                    >
                       <button className="bg-green-500 text-white px-1 py-1 rounded">
                         <span className="ml-1">รายละเอียด</span>
                       </button>
@@ -211,7 +216,7 @@ export default function Products() {
         product={selectedProduct}
         types={types}
         bands={bands}
-        onSave={(updatedProduct: Product) => handleSaveProduct(updatedProduct)}
+        onSave={handleSaveProduct}
       />
     </div>
   );
