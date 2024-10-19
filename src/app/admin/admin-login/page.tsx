@@ -1,30 +1,30 @@
-"use client"; // ทำให้ component เป็น Client Component
+"use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation"; // ใช้ next/navigation แทน next/router
+import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
-import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai"; // นำเข้าไอคอน
+import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
 const AdminLogin = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false); // state สำหรับเปิด-ปิดรหัสผ่าน
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault(); // ป้องกันการรีเฟรชหน้าเมื่อส่งฟอร์ม
+    e.preventDefault();
     try {
       const res = await fetch("/api/admin-login", {
-        method: "POST", // กำหนด method เป็น POST
+        method: "POST",
         headers: {
-          "Content-Type": "application/json", // กำหนด header Content-Type ให้เป็น application/json
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username, password }), // ส่งข้อมูล username และ password ใน body
+        body: JSON.stringify({ username, password }),
       });
 
-      const data = await res.json(); // แปลง response เป็น JSON
+      const data = await res.json();
 
-      if (res.ok && data.success) {
+      if (res.ok) {
         // แสดงข้อความว่า login สำเร็จ
         Swal.fire({
           icon: "success",
@@ -32,19 +32,24 @@ const AdminLogin = () => {
           text: "Redirecting to admin dashboard...",
           timer: 1500,
         }).then(() => {
-          // เปลี่ยนเส้นทางไปยังหน้า admin dashboard
           router.push("/admin/admin-dash");
         });
       } else {
-        // แสดง error ว่า login ไม่สำเร็จ
+        // แสดงข้อความแตกต่างกันไปตาม status code
+        let errorMessage = "Invalid username or password.";
+        if (res.status === 400) {
+          errorMessage = "Username and password are required.";
+        } else if (res.status === 500) {
+          errorMessage = "Server error. Please try again later.";
+        }
+
         Swal.fire({
           icon: "error",
           title: "Login Failed",
-          text: "Invalid username or password.",
+          text: errorMessage,
         });
       }
     } catch (error) {
-      // แสดงข้อความเมื่อเกิด error
       Swal.fire({
         icon: "error",
         title: "Error",
@@ -83,21 +88,20 @@ const AdminLogin = () => {
             </label>
             <input
               id="password"
-              type={showPassword ? "text" : "password"} // แสดงรหัสผ่านตามสถานะ
+              type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="mt-1 px-3 py-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring focus:border-blue-300"
               required
             />
-            {/* ปุ่มไอคอนสำหรับเปิด-ปิดการแสดงรหัสผ่าน */}
             <div
               className="absolute inset-y-0 right-3 top-5 flex items-center cursor-pointer"
-              onClick={() => setShowPassword(!showPassword)} // เปลี่ยน state การแสดงรหัสผ่าน
+              onClick={() => setShowPassword(!showPassword)}
             >
               {showPassword ? (
-                <AiFillEye size={24} /> // ไอคอนเปิดตา
+                <AiFillEye size={24} />
               ) : (
-                <AiFillEyeInvisible size={24} /> // ไอคอนปิดตา
+                <AiFillEyeInvisible size={24} />
               )}
             </div>
           </div>

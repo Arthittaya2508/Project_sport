@@ -5,10 +5,11 @@
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
-    "noEmit": true,
+    "noEmit": false, // Set to false to allow emitting compiled JS files
+    "outDir": "./dist", // Specify output directory for Express server
     "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "bundler",
+    "module": "commonjs", // Use CommonJS for Node.js compatibility
+    "moduleResolution": "node", // Change to 'node' for better compatibility with Node.js
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
@@ -19,9 +20,20 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"] // Adjust if your source structure changes
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "server.ts", // Include your Express server file
+    "src/**/*" // Adjusted to include all TypeScript files in the src folder
+  ],
+  "exclude": [
+    "node_modules",
+    "dist", // Exclude output directory
+    ".next" // Exclude Next.js build output
+  ]
 }
